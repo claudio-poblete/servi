@@ -1,13 +1,14 @@
-/* eslint-disable react/prop-types */
+import PropTypes from 'prop-types'; // Importa PropTypes
 import { createContext, useState, useContext } from 'react'
 import { mockData } from '../data/mockData'
 
-const AuthContext =  createContext()
+const AuthContext = createContext()
 
-const AuthProvider = ( { children } ) => {
+const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
+
   const login = (email, password) => {
-    const foundUser = mockData.usuarios.find( (u) => u.email === email && u.contraseña === password)
+    const foundUser = mockData.usuarios.find((u) => u.email === email && u.contraseña === password)
     if (foundUser) {
       setUser(foundUser)
       return true
@@ -24,10 +25,15 @@ const AuthProvider = ( { children } ) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
+
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+}
+
 const useAuth = () => {
   const context = useContext(AuthContext)
   if (!context) {
-    throw new Error ('useAuth debe ser usado dentro de un AuthProvider')
+    throw new Error('useAuth debe ser usado dentro de un AuthProvider')
   }
   return context
 }
