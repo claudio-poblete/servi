@@ -1,46 +1,42 @@
-import PropTypes from 'prop-types'; // Importa PropTypes
-import { createContext, useState, useContext } from 'react'
-import { mockData } from '../data/mockData'
+import { createContext, useState, useContext } from 'react';
+import { mockData } from '../data/mockData';
 
-const AuthContext = createContext()
+const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(null);
 
   const login = (email, password) => {
-    const foundUser = mockData.usuarios.find((u) => u.email === email && u.contraseña === password)
+    const foundUser = mockData.usuarios.find(
+      (u) => u.email === email && u.contraseña === password
+    );
     if (foundUser) {
-      setUser(foundUser)
-      return true
+      setUser(foundUser);
+      return true;
     }
-    return false
-  }
+    return false;
+  };
 
   const logout = () => {
-    setUser(null)
-  }
+    setUser(null);
+  };
 
-  const value = { user, login, logout }
+  const value = { user, login, logout };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-}
-
-
-AuthProvider.propTypes = {
-  children: PropTypes.node.isRequired,
-}
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
 
 const useAuth = () => {
-  const context = useContext(AuthContext)
+  const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth debe ser usado dentro de un AuthProvider')
+    throw new Error('useAuth debe ser usado dentro de un AuthProvider');
   }
-  return context
-}
+  return context;
+};
 
 const AuthContextModule = {
   AuthProvider,
   useAuth,
-}
+};
 
-export default AuthContextModule
+export default AuthContextModule;

@@ -20,7 +20,7 @@ const NavBar = () => {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <g clip-path="url(#clip0_11_11)">
+          <g clipPath="url(#clip0_11_11)">
             <path
               d="M115.079 13.459H106.145V43.5011H115.079V13.459Z"
               fill="#7715FF"
@@ -81,6 +81,9 @@ const NavBar = () => {
               <Link to="/perfil">¡ Hola ! {user.nombre}</Link>
             </li>
             <li>
+            <Link onClick={handleLogout}>Cerrar Sesión</Link>
+            </li>
+            <li>
               <Link>
                 <FontAwesomeIcon icon={faBell} />
               </Link>
@@ -96,11 +99,11 @@ const NavBar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/post-service">Pide un Servicio</Link>
+            <ButtonLink to="/post-service" className="btn-primary">
+              Pide un Servicio
+            </ButtonLink>
             </li>
-            <li>
-              <button onClick={handleLogout}>Cerrar Sesión</button>
-            </li>
+
           </>
         )}
       </ul>
