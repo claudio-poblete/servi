@@ -8,7 +8,7 @@ import AuthContextModule from "../context/AuthContext";
 
 
 const Dashboard = () => {
-  const { user, logout } = AuthContextModule.useAuth();
+  const { user } = AuthContextModule.useAuth();
 
   if (!user) {
     console.log("No user detected");
@@ -23,7 +23,6 @@ const Dashboard = () => {
       <ProfileServices />
       <ProfileHistorial />
       <PersonalInfoSection /> */}
-      <button onClick={logout}>Cerrar sesión</button>
     </section>
   )
 }

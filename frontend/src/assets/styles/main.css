@@ -356,3 +356,64 @@ footer .container {
 footer h5 {
   font-size: 36px;
 }
+
+.input-login {
+  border-radius: 10px;
+  border: solid #545F71;
+  height: 60px;
+  font-size: 30px;
+  width: 350px;
+  padding: 10px 30px;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  grid-area: login;
+  border-radius: 28px;
+  justify-content: center;
+  padding: 100px 200px;
+  gap: 200px;
+
+}
+
+.login-container .btn-primary {
+  padding: 20px 50px;
+}
+
+.login-container h2 {
+  font-size: 40px;
+  font-weight: 900;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login-main-wrapper {
+  display: grid;
+  grid-template-areas:
+    "login img";
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 20px;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.perfil-hero {
+  display: flex;
+
+}
+
+.img-perfil {
+  border-radius: 50%;
+  height: 460px;
+  width: 460;
+}

@@ -12,7 +12,7 @@ const ProfileInfo = () => {
   return(
     <section className='perfil-hero'>
       <div className='perfil-img'>
-        <img
+        <img className='img-perfil'
           src={user.fotoPerfil || 'url_foto_perfil_predeterminada'}
           alt={`Foto del perfil de ${user.nombre}`}
         />
@@ -37,12 +37,12 @@ const ProfileInfo = () => {
           <p>
             {user.serviciosCompletados !== undefined
               ? `${user.serviciosCompletados} Servicios Completados`
-              : 'Servicios completados no disponibles'}
+              : '0 Servicios Completados'}
           </p>
           <p>
             {user.solicitudesServicios !== undefined
-              ?  `${user.solicitudesServicios} Solcitudes disponibles`
-              :  'Solicitudes de servicio no disponibles'}
+              ?  `${user.solicitudesServicios} Solicitudes disponibles`
+              :  '0 Solicitudes disponibles'}
           </p>
         </div>
       </div>

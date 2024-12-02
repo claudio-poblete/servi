@@ -1,10 +1,12 @@
+import user1 from "../assets/image/usuarios/claudio-poblete.jpg"
+
 const usuarios = [
   {
     id: 1,
     nombre: "Claudio Poblete",
     contraseña: "12345678",
     email: "ejemplo@email.com",
-    fotoPerfil: "url",
+    fotoPerfil: user1,
     descripcion:
       "Cerrajero con 10 años de experiencia en reparación de cerraduras y seguridad",
     valoracion: 4.8,
@@ -22,7 +24,7 @@ const usuarios = [
     nombre: "Sebastian Peña",
     contraseña: "87654321",
     email: "email@ejemplo.com",
-    fotoPerfil: "url",
+    fotoPerfil: "../../assets/image/usuarios/claudio-poblete.jpg",
     descripcion: "Diseñador gráfico especializado en branding y diseño web",
     valoracion: 4.8,
     isVerified: false,
