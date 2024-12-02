@@ -441,6 +441,7 @@ footer h5 {
 
 .perfil-info {
   display: flex;
+  align-items: baseline;
 }
 
 .perfil-info h2 {
@@ -454,4 +455,142 @@ footer h5 {
 
 .descripcion {
  font-size: 33px;
+}
+
+.offer-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color:#ffffff;
+  border-radius: 28px;
+  padding: 45px;
+  width: 360px;
+}
+
+.offer-card-title-container {
+}
+
+.infopersonal-offercard {
+display: flex;
+justify-content: left;
+align-items: center;
+}
+
+.nombre-valoracion-ofercard {
+  padding-left: 20px;
+}
+
+.nombre-valoracion-ofercard h5 a {
+  text-decoration: none;
+  color: inherit;
+  font-size: 20px;
+}
+
+.offer-card img {
+  border-radius: 50%;
+  width: 50px;
+}
+
+.oferta-servi {
+  background-color: #F5F5F5;
+  text-align: center;
+  font-size: 32px;
+  margin: 40px 0px 0px;
+  padding: 20px;
+  border-radius: 10px;
+
+}
+
+.ofertas-title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ofertas-solicitudes {
+  margin-top: 150px;
+}
+
+.ofertas-container {
+  background-color: #F5F5F5;
+  margin-top: 50px;
+  display: grid;
+  grid-gap: 20px;
+  padding: 60px 60px;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-radius: 28px;
+}
+
+.offer-card-detail-container {
+  margin: 120px 0 15px;
+}
+.offer-card-detail-container p {
+  font-size: 15px;
+}
+.offer-card-detail-container h4 {
+  font-size: 32px;
+}
+
+.offer-card-detail-container h5 {
+  font-size: 32px;
+  font-weight: 900;
+  color: #afafaf;
+}
+
+.heading-ofertas {
+  font-size: 38px;
+}
+
+.services-title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.heading-servicios {
+  font-size: 38px;
+}
+
+.services-section {
+  margin-top: 150px;
+}
+
+.services-card-container {
+  background-color: #F5F5F5;
+  margin-top: 50px;
+  display: grid;
+  grid-gap: 20px;
+  padding: 60px 60px;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-radius: 28px;
+}
+
+.service-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color:#ffffff;
+  border-radius: 28px;
+  padding: 45px;
+  width: 360px;
+}
+
+.ubicacion-card {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.titulo-service p {
+  font-size: 32px;
+  font-weight: 900;
+}
+
+.titulo-service h4 {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.titulo-service {
+  margin: 100px 0 40px;
 }

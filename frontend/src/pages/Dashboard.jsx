@@ -19,9 +19,9 @@ const Dashboard = () => {
   return(
     <section className='dashboard'>
       <ProfileInfo />
-      {/* <ProfileOffer />
+      <ProfileOffer />
       <ProfileServices />
-      <ProfileHistorial />
+      {/* <ProfileHistorial />
       <PersonalInfoSection /> */}
     </section>
   )

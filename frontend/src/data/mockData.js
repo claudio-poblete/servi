@@ -46,6 +46,7 @@ const servicios = [
     idUsuario: 1,
     idCategoria: 1,
     estado: "pendiente",
+    presupuesto: 30000,
   },
 
   {
@@ -53,9 +54,10 @@ const servicios = [
     titulo: "Reparación de cerraduras",
     ubicacion: "Providencia, Chile",
     fechaPublicacion: "2024-11-25",
-    idUsuario: 2,
-    idCategoria: 2,
-    estado: "completado",
+    idUsuario: 1,
+    idCategoria: 1,
+    estado: "pendiente",
+    presupuesto: 30000,
   },
 ];
 
@@ -89,12 +91,12 @@ const ofertas = [
 
   {
     id: 2,
-    idUsuario: 2,
-    idServicio: 2,
+    idUsuario: 1,
+    idServicio: 1,
     titulo: "Rediseño de sitio web",
     descripcion: "Necesito rediseñar el sitio web de mi negocio",
     oferta: 50000,
-    estado: "aceptado",
+    estado: "pendiente",
   },
 ];
 
