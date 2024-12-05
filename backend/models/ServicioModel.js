@@ -40,8 +40,8 @@ const createService = async (req, res) => {
 		} = req.body
 
 		const text = `
-			INSERT INTO servicio (titulo, descripcion, 
-			presupuesto, id_usuario, ubicacion, id_categoria) 
+			INSERT INTO servicio (titulo, descripcion,
+			presupuesto, id_usuario, ubicacion, id_categoria)
 			VALUES ($1, $2, $3, $4, $5, $6) RETURNING *
 		`
 		const params = [titulo, descripcion, presupuesto, id_usuario, ubicacion, id_categoria]
@@ -65,7 +65,6 @@ const updateService = async (req, res, serviceId) => {
 			titulo,
 			descripcion,
 			presupuesto,
-			id_usuario,
 			ubicacion,
 			id_categoria,
 		} = req.body
