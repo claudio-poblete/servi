@@ -5,6 +5,7 @@ import NavBar from "./components/shared/NavBar";
 import Dashboard from "./pages/Dashboard";
 import ComoFunciona from "./components/shared/ComoFunciona";
 import Login from "./pages/Login"; // Componente Login que has creado
+import Register from "./pages/Register";
 import Home from "./pages/Home";
 import PrivateRoute from "./components/utils/PrivateRoute"
 import Footer from "./components/shared/Footer";
@@ -17,6 +18,7 @@ function App() {
           <NavBar />
           <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} />} />
             <Route path="/galeria/:categoriaId" element={<Galeria />} />
             <Route path="/como-funciona" element={<ComoFunciona />} />

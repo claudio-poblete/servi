@@ -366,6 +366,15 @@ footer h5 {
   padding: 10px 30px;
 }
 
+.input-register {
+  border-radius: 10px;
+  border: solid #545F71;
+  height: 60px;
+  font-size: 30px;
+  width: 350px;
+  padding: 10px 30px;
+}
+
 .login-container {
   display: flex;
   flex-direction: column;
@@ -375,7 +384,17 @@ footer h5 {
   justify-content: center;
   padding: 100px 200px;
   gap: 200px;
+}
 
+.register-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  grid-area: login;
+  border-radius: 28px;
+  justify-content: center;
+  padding: 100px 200px;
+  gap: 200px;
 }
 
 .login-container .btn-primary {
@@ -394,6 +413,14 @@ footer h5 {
 }
 
 .login-main-wrapper {
+  display: grid;
+  grid-template-areas:
+    "login img";
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 20px;
+}
+
+.register-main-wrapper {
   display: grid;
   grid-template-areas:
     "login img";
