@@ -1,9 +1,34 @@
 const db = require('../config/database')
-const { validationResult } = require('express-validator')
+
+const createResena = async (id_servicio, id_usuario, descripcion, valoracion) => {
+  try {
+    const checkQuery = 'SELECT * FROM resena WHERE id_servicio = $1 AND id_usuario = $2'
+    const checkResult = await db.query(checkQuery, [id_servicio, id_usuario])
+
+    if (checkResult.rows.length > 0) {
+      throw new Error('El usuario ya ha dejado una reseña para este servicio')
+    }
+
+    const query = 'INSERT INTO resena (id_servicio, id_usuario, descripcion, valoracion) VALUES ($1, $2, $3, $4) RETURNING *'
+    const params = [id_servicio, id_usuario, descripcion, valoracion]
+    const result = await db.query(query, params)
+
+    return result.rows[0]
+  } catch (error) {
+    console.error('Error al crear la reseña:', error)
+    throw new Error('Error al crear la reseña')
+  }
+}
 
 const getAllResenas = async () => {
   try {
-    const result = await db.query('SELECT * FROM resena')
+    const query = 'SELECT * FROM resena'
+    const result = await db.query(query)
+
+    if (result.rows.length === 0) {
+      throw new Error('No se encontraron reseñas')
+    }
+
     return result.rows
   } catch (error) {
     console.error('Error al obtener las reseñas:', error)
@@ -11,78 +36,82 @@ const getAllResenas = async () => {
   }
 }
 
-const getResenaById = async (resenaId) => {
+const getResenaById = async (id_resena) => {
   try {
-    const text = 'SELECT * FROM resena WHERE id = $1'
-    const params = [resenaId]
-    const result = await db.query(text, params)
+    const query = 'SELECT * FROM resena WHERE id = $1'
+    const result = await db.query(query, [id_resena])
+
+    if (result.rows.length === 0) {
+      throw new Error(Reseña con ID ${id_resena} no encontrada)
+    }
+
     return result.rows[0]
   } catch (error) {
-    console.error('Error al obtener la reseña por ID:', error)
+    console.error('Error al obtener la reseña:', error)
     throw error
   }
 }
 
-const createResena = async (req, res) => {
+const getResenasByServicio = async (id_servicio) => {
   try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() })
+    const query = 'SELECT * FROM resena WHERE id_servicio = $1'
+    const result = await db.query(query, [id_servicio])
+
+    if (result.rows.length === 0) {
+      throw new Error('No se encontraron reseñas para este servicio')
     }
 
-    const { id_servicio, descripcion, valoracion, id_usuario } = req.body
-    const text = 'INSERT INTO resena (id_servicio, descripcion, valoracion, id_usuario) VALUES ($1, $2, $3, $4) RETURNING *'
-    const params = [id_servicio, descripcion, valoracion, id_usuario]
-
-    const result = await db.query(text, params)
-    return res.status(201).json(result.rows[0])
+    return result.rows
   } catch (error) {
-    console.error('Error al crear la reseña:', error)
-    return res.status(500).json({ error: 'Error al crear la reseña' })
+    console.error('Error al obtener las reseñas por servicio:', error)
+    throw error
   }
 }
 
-const updateResena = async (req, res, resenaId) => {
+const updateResena = async (id_resena, descripcion, valoracion) => {
   try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() })
+    const checkQuery = 'SELECT * FROM resena WHERE id = $1'
+    const checkResult = await db.query(checkQuery, [id_resena])
+
+    if (checkResult.rows.length === 0) {
+      throw new Error(Reseña con ID ${id_resena} no encontrada)
     }
 
-    const { descripcion, valoracion } = req.body
-    const updateQuery = 'UPDATE resena SET descripcion = $1, valoracion = $2 WHERE id = $3'
-    const params = [descripcion, valoracion, resenaId]
+    const query = 'UPDATE resena SET descripcion = $1, valoracion = $2 WHERE id = $3 RETURNING *'
+    const params = [descripcion, valoracion, id_resena]
+    const result = await db.query(query, params)
 
-    const result = await db.query(updateQuery, params)
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'Reseña no encontrada' })
-    }
-
-    return res.status(200).json({ message: 'Reseña actualizada correctamente' })
+    return result.rows[0]
   } catch (error) {
     console.error('Error al actualizar la reseña:', error)
-    return res.status(500).json({ error: 'Error al actualizar la reseña' })
+    throw error
   }
 }
 
-const deleteResena = async (req, res, resenaId) => {
+const deleteResena = async (id_resena) => {
   try {
-    const result = await db.query('DELETE FROM resena WHERE id = $1', [resenaId])
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'Reseña no encontrada' })
+    const checkQuery = 'SELECT * FROM resena WHERE id = $1'
+    const checkResult = await db.query(checkQuery, [id_resena])
+
+    if (checkResult.rows.length === 0) {
+      throw new Error(Reseña con ID ${id_resena} no encontrada)
     }
 
-    return res.status(200).json({ message: 'Reseña eliminada correctamente' })
+    const deleteQuery = 'DELETE FROM resena WHERE id = $1'
+    const result = await db.query(deleteQuery, [id_resena])
+
+    return { message: 'Reseña eliminada correctamente' }
   } catch (error) {
     console.error('Error al eliminar la reseña:', error)
-    return res.status(500).json({ error: 'Error al eliminar la reseña' })
+    throw error
   }
 }
 
 module.exports = {
+  createResena,
   getAllResenas,
   getResenaById,
-  createResena,
+  getResenasByServicio,
   updateResena,
   deleteResena
 }

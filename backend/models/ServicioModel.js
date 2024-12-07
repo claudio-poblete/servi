@@ -1,146 +1,99 @@
 const db = require('../config/database')
-const { validationResult } = require('express-validator')
 
-const getAllServices = async () => {
-	try {
-		const result = await db.query('SELECT * FROM servicio')
-		return result.rows
-	} catch (error) {
-		console.error('Error al obtener los servicios:', error)
-		throw error
-	}
+const createServicio = async (titulo, descripcion, presupuesto, id_usuario, ubicacion, id_categoria) => {
+  try {
+    const queryCheck = 'SELECT * FROM servicio WHERE titulo = $1 AND id_usuario = $2'
+    const checkResult = await db.query(queryCheck, [titulo, id_usuario])
+
+    if (checkResult.rows.length > 0) {
+      throw new Error('Ya existe un servicio con este título para el usuario')
+    }
+
+    const query = 'INSERT INTO servicio (titulo, descripcion, presupuesto, id_usuario, ubicacion, id_categoria) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *'
+    const params = [titulo, descripcion, presupuesto, id_usuario, ubicacion, id_categoria]
+    const result = await db.query(query, params)
+
+    return result.rows[0]
+  } catch (error) {
+    console.error('Error al crear el servicio:', error)
+    throw error
+  }
 }
 
-const getServiceById = async (serviceId) => {
-	try {
-		const text = 'SELECT * FROM servicio WHERE id = $1'
-		const params = [serviceId]
-		const result = await db.query(text, params)
-		return result.rows[0]
-	} catch (error) {
-		console.error('Error al obtener el servicio por ID:', error)
-		throw error
-	}
+const getAllServicios = async () => {
+  try {
+    const query = 'SELECT * FROM servicio'
+    const result = await db.query(query)
+
+    return result.rows
+  } catch (error) {
+    console.error('Error al obtener los servicios:', error)
+    throw error
+  }
 }
 
-const createService = async (req, res) => {
-	try {
-		const errors = validationResult(req)
-		if(!errors.isEmpty()){
-			return res.status(400).json({ errors: errors.array() })
-		}
+const getServicioById = async (id_servicio) => {
+  try {
+    const query = 'SELECT * FROM servicio WHERE id = $1'
+    const result = await db.query(query, [id_servicio])
 
-		const {
-			titulo,
-			descripcion,
-			presupuesto,
-			id_usuario,
-			ubicacion,
-			id_categoria,
-		} = req.body
+    if (result.rows.length === 0) {
+      throw new Error('Servicio no encontrado')
+    }
 
-		const text = `
-			INSERT INTO servicio (titulo, descripcion,
-			presupuesto, id_usuario, ubicacion, id_categoria)
-			VALUES ($1, $2, $3, $4, $5, $6) RETURNING *
-		`
-		const params = [titulo, descripcion, presupuesto, id_usuario, ubicacion, id_categoria]
-
-		const result = await db.query(text, params)
-		return res.status(200).json(result.rows[0])
-	} catch (error) {
-		console.error('Error al crear el servicio:', error)
-		return res.status(500).json({ error: 'Error al crear el servicio' })
-	}
+    return result.rows[0]
+  } catch (error) {
+    console.error('Error al obtener el servicio:', error)
+    throw error
+  }
 }
 
-const updateService = async (req, res, serviceId) => {
-	try {
-		const errors = validationResult(req)
-		if (!errors.isEmpty()) {
-			return res.status(400).json({ errors: erros.array() })
-		}
+const updateServicio = async (id_servicio, titulo, descripcion, presupuesto, ubicacion, id_categoria, estado) => {
+  try {
+    const checkQuery = 'SELECT * FROM servicio WHERE id = $1'
+    const checkResult = await db.query(checkQuery, [id_servicio])
 
-		const {
-			titulo,
-			descripcion,
-			presupuesto,
-			ubicacion,
-			id_categoria,
-		} = req.body
+    if (checkResult.rows.length === 0) {
+      throw new Error('Servicio no encontrado')
+    }
 
-		let updateQuery = 'UPDATE servicio SET'
-		const params = []
-		let index = 1
+    const query = `
+      UPDATE servicio 
+      SET titulo = $1, descripcion = $2, presupuesto = $3, ubicacion = $4, id_categoria = $5, estado = $6 
+      WHERE id = $7 RETURNING *`
+    const params = [titulo, descripcion, presupuesto, ubicacion, id_categoria, estado, id_servicio]
+    const result = await db.query(query, params)
 
-		if (titulo) {
-			updateQuery += `titulo=$${index}, `
-			params.push(titulo)
-			index++
-		}
-
-		if (descripcion) {
-			updateQuery += `descripcion=$${index}, `
-			params.push(descripcion)
-			index++
-		}
-
-		if (presupuesto) {
-			updateQuery += `presupuesto=$${index}, `
-			params.push(presupuesto)
-			index++
-		}
-
-		if (ubicacion) {
-			updateQuery += `ubicacion=$${index}, `
-			params.push(ubicacion)
-			index++
-		}
-
-		if (id_categoria) {
-			updateQuery += `id_categoria=$${index}, `
-			params.push(id_categoria)
-			index++
-		}
-
-		if (estado !== undefined) {
-			updateQuery += `estado=$${index}, `
-			params.push(estado)
-			index++
-		}
-
-		updateQuery = updateQuery.slice(0, -2)
-		updateQuery += `WHERE id = $${index}`
-		params.push(serviceId)
-
-		const result = await db.query(updateQuery, params)
-		if (result.rowCount === 0) {
-			return res.status(404).json({ error: 'Servicio no encontrado' })
-		}
-		return res.status(200).json({ message: 'Servicio actualizado correctamente' })
-	} catch (error) {
-		console.error('Error al actualizar el servicio:', error)
-		return res.status(500).json({ error: 'Error al actualizar el servicio' })
-	}
+    return result.rows[0]
+  } catch (error) {
+    console.error('Error al actualizar el servicio:', error)
+    throw error
+  }
 }
 
-const deleteService = async (req, res, serviceId) => {
-	try {
-		const result = await db.query('DELETE FROM servicio WHERE id = $1', [serviceId])
-		if (result.rowCount === 0) {
-			return res.status(404).json({ error: 'Servicio no encontrado'} )
-		}
-		return res.status(200).json({ message: 'Servicio eliminado correctamente'} )
-	} catch (error) {
-		console.error('Error al elimnar el servicio:', error)
-		return res.statu(500).json({ error: 'Error al eliminar el servicio' })
-	}
+const deleteServicio = async (id_servicio) => {
+  try {
+    const checkQuery = 'SELECT * FROM servicio WHERE id = $1'
+    const checkResult = await db.query(checkQuery, [id_servicio])
+
+    if (checkResult.rows.length === 0) {
+      throw new Error('Servicio no encontrado')
+    }
+
+    const deleteQuery = 'DELETE FROM servicio WHERE id = $1'
+    await db.query(deleteQuery, [id_servicio])
+
+    return { message: 'Servicio eliminado correctamente' }
+  } catch (error) {
+    console.error('Error al eliminar el servicio:', error)
+    throw error
+  }
 }
 
 module.exports = {
-	getAllServices,
-	getServiceById,
-	createService,
-	updateService,
-	deleteService,
+  createServicio,
+  getAllServicios,
+  getServicioById,
+  updateServicio,
+  deleteServicio
 }

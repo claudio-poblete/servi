@@ -1,89 +1,146 @@
 const db = require('../config/database')
-const { validationResult } = require('express-validator')
+
+const createPago = async (id_oferta, id_usuario) => {
+  try {
+    const checkQuery = `
+      SELECT * FROM ofertas
+      WHERE id = $1 AND id_usuario = $2
+    `
+    const checkResult = await db.query(checkQuery, [id_oferta, id_usuario])
+
+    if (checkResult.rows.length === 0) {
+      throw new Error('La oferta no existe o el usuario no tiene una oferta válida para este pago')
+    }
+
+    const checkPagoQuery = 'SELECT * FROM pago WHERE id_oferta = $1 AND id_usuario = $2'
+    const checkPagoResult = await db.query(checkPagoQuery, [id_oferta, id_usuario])
+
+    if (checkPagoResult.rows.length > 0) {
+      throw new Error('Este usuario ya ha pagado por esta oferta')
+    }
+
+    const query = 'INSERT INTO pago (id_oferta, id_usuario) VALUES ($1, $2) RETURNING *'
+    const params = [id_oferta, id_usuario]
+    const result = await db.query(query, params)
+
+    return result.rows[0]
+  } catch (error) {
+    console.error('Error al crear el pago:', error)
+    throw error
+  }
+}
+
+const getPagosByUsuario = async (id_usuario) => {
+  try {
+    const query = 'SELECT * FROM pago WHERE id_usuario = $1'
+    const result = await db.query(query, [id_usuario])
+
+    return result.rows
+  } catch (error) {
+    console.error('Error al obtener los pagos por usuario:', error)
+    throw error
+  }
+}
+
+const getPagosByOferta = async (id_oferta) => {
+  try {
+    const query = 'SELECT * FROM pago WHERE id_oferta = $1'
+    const result = await db.query(query, [id_oferta])
+
+    return result.rows
+  } catch (error) {
+    console.error('Error al obtener los pagos por oferta:', error)
+    throw error
+  }
+}
 
 const getAllPagos = async () => {
   try {
-    const result = await db.query('SELECT * FROM pago')
+    const query = 'SELECT * FROM pago'
+    const result = await db.query(query)
+
     return result.rows
   } catch (error) {
-    console.error('Error al obtener todos los pagos:', error)
+    console.error('Error al obtener los pagos:', error)
     throw error
   }
 }
 
-const getPagoById = async (pagoId) => {
+const getPagoById = async (id_pago) => {
   try {
-    const text = 'SELECT * FROM pago WHERE id = $1'
-    const params = [pagoId]
-    const result = await db.query(text, params)
+    const query = 'SELECT * FROM pago WHERE id = $1'
+    const result = await db.query(query, [id_pago])
+
+    if (result.rows.length === 0) {
+      throw new Error('Pago no encontrado')
+    }
+
     return result.rows[0]
   } catch (error) {
-    console.error('Error al obtener el pago por ID:', error)
+    console.error('Error al obtener el pago:', error)
     throw error
   }
 }
 
-const createPago = async (req, res) => {
+const updatePago = async (id_pago, id_oferta, id_usuario) => {
   try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() })
+    const checkQuery = 'SELECT * FROM pago WHERE id = $1'
+    const checkResult = await db.query(checkQuery, [id_pago])
+
+    if (checkResult.rows.length === 0) {
+      throw new Error('Pago no encontrado')
     }
 
-    const { id_oferta, id_usuario } = req.body
+    const checkOfertaQuery = 'SELECT * FROM ofertas WHERE id = $1'
+    const checkOfertaResult = await db.query(checkOfertaQuery, [id_oferta])
 
-    const text = 'INSERT INTO pago (id_oferta, id_usuario) VALUES ($1, $2) RETURNING *'
-    const params = [id_oferta, id_usuario]
-    const result = await db.query(text, params)
-
-    return res.status(201).json(result.rows[0])
-  } catch (error) {
-    console.error('Error al crear el pago:', error)
-    return res.status(500).json({ error: 'Error al crear el pago' })
-  }
-}
-
-const updatePago = async (req, res, pagoId) => {
-  try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() })
+    if (checkOfertaResult.rows.length === 0) {
+      throw new Error('Oferta no encontrada')
     }
 
-    const { id_oferta, id_usuario } = req.body
+    const checkUserQuery = 'SELECT * FROM ofertas WHERE id = $1 AND id_usuario = $2'
+    const checkUserResult = await db.query(checkUserQuery, [id_oferta, id_usuario])
 
-    const text = 'UPDATE pago SET id_oferta = $1, id_usuario = $2 WHERE id = $3 RETURNING *'
-    const params = [id_oferta, id_usuario, pagoId]
-    const result = await db.query(text, params)
-
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'Pago no encontrado' })
+    if (checkUserResult.rows.length === 0) {
+      throw new Error('El usuario no tiene una oferta válida para este pago')
     }
 
-    return res.status(200).json(result.rows[0])
+    const query = 'UPDATE pago SET id_oferta = $1, id_usuario = $2 WHERE id = $3 RETURNING *'
+    const params = [id_oferta, id_usuario, id_pago]
+    const result = await db.query(query, params)
+
+    return result.rows[0]
   } catch (error) {
     console.error('Error al actualizar el pago:', error)
-    return res.status(500).json({ error: 'Error al actualizar el pago' })
+    throw error
   }
 }
 
-const deletePago = async (req, res, pagoId) => {
+const deletePago = async (id_pago) => {
   try {
-    const result = await db.query('DELETE FROM pago WHERE id = $1', [pagoId])
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'Pago no encontrado' })
+    const checkQuery = 'SELECT * FROM pago WHERE id = $1'
+    const checkResult = await db.query(checkQuery, [id_pago])
+
+    if (checkResult.rows.length === 0) {
+      throw new Error('Pago no encontrado')
     }
-    return res.status(200).json({ message: 'Pago eliminado correctamente' })
+
+    const deleteQuery = 'DELETE FROM pago WHERE id = $1'
+    const result = await db.query(deleteQuery, [id_pago])
+
+    return { message: 'Pago eliminado correctamente' }
   } catch (error) {
     console.error('Error al eliminar el pago:', error)
-    return res.status(500).json({ error: 'Error al eliminar el pago' })
+    throw error
   }
 }
 
 module.exports = {
+  createPago,
   getAllPagos,
   getPagoById,
-  createPago,
   updatePago,
-  deletePago
+  deletePago,
+  getPagosByUsuario,
+  getPagosByOferta
 }
