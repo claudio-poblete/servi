@@ -1,146 +1,125 @@
 const db = require('../config/database')
-const bcrypt = require('bcrypt')
-const { validationResult } = require('express-validator')
+const bcrypt = require('bcryptjs')
 
-const saltRounds = 10
-
-const hashPassword = async (password) => {
-  return await bcrypt.hash(password, saltRounds)
-}
-
-const comparePassword = async (password, hashedPassword) => {
-  return await bcrypt.compare(password, hashedPassword)
-}
-
-const getAllUsers = async () => {
+const createUsuario = async (nombre, contrasena, email, foto_perfil, descripcion, id_datos_bancarios) => {
   try {
-    const result = await db.query('SELECT * FROM usuario')
-    return result.rows
+    const emailCheckQuery = 'SELECT * FROM usuario WHERE email = $1'
+    const emailCheckResult = await db.query(emailCheckQuery, [email])
+
+    if (emailCheckResult.rows.length > 0) {
+      throw new Error('El correo electrónico ya está registrado')
+    }
+
+    const hashedPassword = await bcrypt.hash(contrasena, 10)
+
+    const query = `
+      INSERT INTO usuario (nombre, contrasena, email, foto_perfil, descripcion, id_datos_bancarios)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING *;
+    `
+    const params = [nombre, hashedPassword, email, foto_perfil, descripcion, id_datos_bancarios]
+    const result = await db.query(query, params)
+
+    return result.rows[0]
   } catch (error) {
-    console.error('Error al obtener todos los usuarios:', error)
+    console.error('Error al crear el usuario:', error)
     throw error
   }
 }
 
-const getUserById = async (userId) => {
+const getUsuarioById = async (usuarioId) => {
   try {
-    const text = 'SELECT * FROM usuario WHERE id = $1'
-    const params = [userId]
-    const result = await db.query(text, params)
+    const query = 'SELECT * FROM usuario WHERE id = $1'
+    const result = await db.query(query, [usuarioId])
+
     if (result.rows.length === 0) {
       throw new Error('Usuario no encontrado')
     }
+
     return result.rows[0]
   } catch (error) {
-    console.error('Error al obtener el usuario por ID:', error)
+    console.error('Error al obtener el usuario:', error)
     throw error
   }
 }
 
-const createUser = async (req, res) => {
+const getUsuarioByEmail = async (email) => {
   try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() })
+    const query = 'SELECT * FROM usuario WHERE email = $1'
+    const result = await db.query(query, [email])
+
+    if (result.rows.length === 0) {
+      throw new Error('Usuario no encontrado')
     }
 
-    const { nombre, contrasena, email, foto_perfil, descripcion, id_datos_bancarios } = req.body
-    const hashedPassword = await hashPassword(contrasena)
-
-    const text = 'INSERT INTO usuario (nombre, contrasena, email, foto_perfil, descripcion, id_datos_bancarios) ' +
-                 'VALUES ($1, $2, $3, $4, $5, $6) RETURNING *'
-    const params = [nombre, hashedPassword, email, foto_perfil, descripcion, id_datos_bancarios]
-    const result = await db.query(text, params)
-    return res.status(201).json(result.rows[0])
+    return result.rows[0]
   } catch (error) {
-    console.error('Error al crear el usuario:', error)
-    return res.status(500).json({ error: 'Error al crear el usuario' })
+    console.error('Error al obtener el usuario:', error)
+    throw error
   }
 }
 
-const updateUser = async (req, res, userId) => {
+const updateUsuario = async (usuarioId, nombre, contrasena, email, foto_perfil, descripcion, id_datos_bancarios) => {
   try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() })
+    const checkUserQuery = 'SELECT * FROM usuario WHERE id = $1'
+    const checkUserResult = await db.query(checkUserQuery, [usuarioId])
+
+    if (checkUserResult.rows.length === 0) {
+      throw new Error('Usuario no encontrado')
     }
 
-    const { nombre, contrasena, email, foto_perfil, descripcion, id_datos_bancarios } = req.body
-    let updateQuery = 'UPDATE usuario SET'
-    let params = []
-    let index = 1
-
-    if (nombre) {
-      updateQuery += ` nombre=$${index}, `
-      params.push(nombre)
-      index++
-    }
-
+    let hashedPassword = null
     if (contrasena) {
-      const hashedPassword = await hashPassword(contrasena)
-      updateQuery += ` contrasena=$${index}, `
-      params.push(hashedPassword)
-      index++
+      hashedPassword = await bcrypt.hash(contrasena, 10)
     }
 
-    if (email) {
-      updateQuery += ` email=$${index}, `
-      params.push(email)
-      index++
-    }
-
-    if (foto_perfil) {
-      updateQuery += ` foto_perfil=$${index}, `
-      params.push(foto_perfil)
-      index++
-    }
-
-    if (descripcion) {
-      updateQuery += ` descripcion=$${index}, `
-      params.push(descripcion)
-      index++
-    }
-
-    if (id_datos_bancarios) {
-      updateQuery += ` id_datos_bancarios=$${index}, `
-      params.push(id_datos_bancarios)
-      index++
-    }
-
-    updateQuery = updateQuery.slice(0, -2)
-    updateQuery += ` WHERE id = $${index}`
-    params.push(userId)
-
+    const updateQuery = `
+      UPDATE usuario
+      SET nombre = $1, contrasena = COALESCE($2, contrasena), email = $3, foto_perfil = $4, descripcion = $5, id_datos_bancarios = $6
+      WHERE id = $7
+      RETURNING *;
+    `
+    const params = [
+      nombre,
+      hashedPassword,
+      email,
+      foto_perfil,
+      descripcion,
+      id_datos_bancarios,
+      usuarioId
+    ]
     const result = await db.query(updateQuery, params)
 
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'Usuario no encontrado' })
-    }
-
-    return res.status(200).json({ message: 'Usuario actualizado correctamente' })
+    return result.rows[0]
   } catch (error) {
     console.error('Error al actualizar el usuario:', error)
-    return res.status(500).json({ error: 'Error al actualizar el usuario' })
+    throw error
   }
 }
 
-const deleteUser = async (req, res, userId) => {
+const deleteUsuario = async (usuarioId) => {
   try {
-    const result = await db.query('DELETE FROM usuario WHERE id = $1', [userId])
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'Usuario no encontrado' })
+    const checkUserQuery = 'SELECT * FROM usuario WHERE id = $1'
+    const checkUserResult = await db.query(checkUserQuery, [usuarioId])
+
+    if (checkUserResult.rows.length === 0) {
+      throw new Error('Usuario no encontrado')
     }
-    return res.status(200).json({ message: 'Usuario eliminado correctamente' })
+
+    const deleteQuery = 'DELETE FROM usuario WHERE id = $1'
+    const result = await db.query(deleteQuery, [usuarioId])
+
+    return { message: 'Usuario eliminado correctamente' }
   } catch (error) {
     console.error('Error al eliminar el usuario:', error)
-    return res.status(500).json({ error: 'Error al eliminar el usuario' })
+    throw error
   }
 }
 
 module.exports = {
-  getAllUsers,
-  getUserById,
-  createUser,
-  updateUser,
-  deleteUser
+  createUsuario,
+  getUsuarioById,
+  updateUsuario,
+  deleteUsuario,
+	getUsuarioByEmail
 }

@@ -1,88 +1,94 @@
-const ServicioModel = require('../models/servicioModel')
-
-const getAllServicios = async (req, res) => {
-  try {
-    const servicios = await ServicioModel.getAllServicios()
-    res.status(200).json(servicios)
-  } catch (error) {
-    console.error('Error al obtener los servicios:', error)
-    res.status(500).json({ error: 'Error al obtener los servicios' })
-  }
-}
-
-const getServicioById = async (req, res) => {
-  try {
-    const { id } = req.params
-    const servicio = await ServicioModel.getServicioById(id)
-    if (!servicio) {
-      return res.status(404).json({ error: 'Servicio no encontrado' })
-    }
-    res.status(200).json(servicio)
-  } catch (error) {
-    console.error('Error al obtener el servicio por ID:', error)
-    res.status(500).json({ error: 'Error al obtener el servicio' })
-  }
-}
+const { validationResult } = require('express-validator')
+const ServicioModel = require('../models/ServicioModel')
 
 const createServicio = async (req, res) => {
   try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() })
+    }
+
     const { titulo, descripcion, presupuesto, id_usuario, ubicacion, id_categoria } = req.body
-    const nuevoServicio = await ServicioModel.createServicio({
+
+    const newServicio = await ServicioModel.createServicio(
       titulo,
       descripcion,
       presupuesto,
       id_usuario,
       ubicacion,
       id_categoria
-    })
-    res.status(201).json(nuevoServicio)
+    )
+
+    return res.status(201).json(newServicio)
   } catch (error) {
     console.error('Error al crear el servicio:', error)
-    res.status(500).json({ error: 'Error al crear el servicio' })
+    return res.status(500).json({ error: error.message || 'Error al crear el servicio' })
+  }
+}
+
+const getAllServicios = async (req, res) => {
+  try {
+    const servicios = await ServicioModel.getAllServicios()
+
+    return res.status(200).json(servicios)
+  } catch (error) {
+    console.error('Error al obtener los servicios:', error)
+    return res.status(500).json({ error: error.message || 'Error al obtener los servicios' })
+  }
+}
+
+const getServicioById = async (req, res) => {
+  const { id_servicio } = req.params
+
+  try {
+    const servicio = await ServicioModel.getServicioById(id_servicio)
+
+    return res.status(200).json(servicio)
+  } catch (error) {
+    console.error('Error al obtener el servicio:', error)
+    return res.status(500).json({ error: error.message || 'Error al obtener el servicio' })
   }
 }
 
 const updateServicio = async (req, res) => {
+  const { id_servicio } = req.params
+  const { titulo, descripcion, presupuesto, ubicacion, id_categoria, estado } = req.body
+
   try {
-    const { id } = req.params
-    const { titulo, descripcion, presupuesto, id_usuario, ubicacion, id_categoria, estado } = req.body
-    const servicioActualizado = await ServicioModel.updateServicio(id, {
+    const updatedServicio = await ServicioModel.updateServicio(
+      id_servicio,
       titulo,
       descripcion,
       presupuesto,
-      id_usuario,
       ubicacion,
       id_categoria,
       estado
-    })
-    if (!servicioActualizado) {
-      return res.status(404).json({ error: 'Servicio no encontrado' })
-    }
-    res.status(200).json({ message: 'Servicio actualizado correctamente' })
+    )
+
+    return res.status(200).json(updatedServicio)
   } catch (error) {
     console.error('Error al actualizar el servicio:', error)
-    res.status(500).json({ error: 'Error al actualizar el servicio' })
+    return res.status(500).json({ error: error.message || 'Error al actualizar el servicio' })
   }
 }
 
 const deleteServicio = async (req, res) => {
+  const { id_servicio } = req.params
+
   try {
-    const { id } = req.params
-    const servicioEliminado = await ServicioModel.deleteServicio(id)
-    if (!servicioEliminado) {
-      return res.status(404).json({ error: 'Servicio no encontrado' })
-    }
-    res.status(200).json({ message: 'Servicio eliminado correctamente' })
+    const response = await ServicioModel.deleteServicio(id_servicio)
+
+    return res.status(200).json(response)
   } catch (error) {
     console.error('Error al eliminar el servicio:', error)
-    res.status(500).json({ error: 'Error al eliminar el servicio' })
+    return res.status(500).json({ error: error.message || 'Error al eliminar el servicio' })
   }
 }
 
 module.exports = {
+  createServicio,
   getAllServicios,
   getServicioById,
-  createServicio,
   updateServicio,
   deleteServicio
 }

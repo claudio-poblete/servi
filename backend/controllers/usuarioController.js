@@ -1,0 +1,111 @@
+const { validationResult } = require('express-validator')
+const UsuarioModel = require('../models/UsuarioModel')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const { jwtSecret, jwtExpiration } = require('../config/config')
+
+const createUsuario = async (req, res) => {
+  try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() })
+    }
+
+    const { nombre, contrasena, email, foto_perfil, descripcion, id_datos_bancarios } = req.body
+    const newUser = await UsuarioModel.createUsuario(
+      nombre,
+      contrasena,
+      email,
+      foto_perfil,
+      descripcion,
+      id_datos_bancarios
+    )
+
+    return res.status(201).json(newUser)
+  } catch (error) {
+    console.error('Error al crear el usuario:', error)
+    return res.status(500).json({ error: 'Error al crear el usuario' })
+  }
+}
+
+const getUsuarioById = async (req, res) => {
+  const { id } = req.params
+
+  try {
+    const user = await UsuarioModel.getUsuarioById(id)
+
+    return res.status(200).json(user)
+  } catch (error) {
+    console.error('Error al obtener el usuario:', error)
+    return res.status(500).json({ error: 'Error al obtener el usuario' })
+  }
+}
+
+
+const loginUsuario = async (req, res) => {
+  const { email, contrasena } = req.body
+  try {
+    const usuario = await UsuarioModel.getUsuarioByEmail(email)
+    if (!usuario) {
+      return res.status(400).json({ error: 'Correo electrónico o contraseña incorrectos' })
+    }
+
+    const isPasswordValid = await bcrypt.compare(contrasena, usuario.contrasena)
+    if (!isPasswordValid) {
+      return res.status(400).json({ error: 'Correo electrónico o contraseña incorrectos' })
+    }
+
+    const payload = { id: usuario.id, email: usuario.email }
+
+    const token = jwt.sign(payload, jwtSecret, { expiresIn: jwtExpiration })
+
+    res.status(200).json({ message: 'Login exitoso', token })
+  } catch (error) {
+    console.error('Error al hacer login:', error)
+    res.status(500).json({ error: 'Error en el servidor' })
+  }
+}
+
+
+const updateUsuario = async (req, res) => {
+  const { id } = req.params
+  const { nombre, contrasena, email, foto_perfil, descripcion, id_datos_bancarios } = req.body
+
+  try {
+    const updatedUser = await UsuarioModel.updateUsuario(
+      id,
+      nombre,
+      contrasena,
+      email,
+      foto_perfil,
+      descripcion,
+      id_datos_bancarios
+    )
+
+    return res.status(200).json(updatedUser)
+  } catch (error) {
+    console.error('Error al actualizar el usuario:', error)
+    return res.status(500).json({ error: 'Error al actualizar el usuario' })
+  }
+}
+
+const deleteUsuario = async (req, res) => {
+  const { id } = req.params
+
+  try {
+    const response = await UsuarioModel.deleteUsuario(id)
+
+    return res.status(200).json(response)
+  } catch (error) {
+    console.error('Error al eliminar el usuario:', error)
+    return res.status(500).json({ error: 'Error al eliminar el usuario' })
+  }
+}
+
+module.exports = {
+  createUsuario,
+  getUsuarioById,
+  updateUsuario,
+  deleteUsuario,
+	loginUsuario
+}

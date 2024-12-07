@@ -1,89 +1,99 @@
 const db = require('../config/database')
-const { validationResult } = require('express-validator')
+
+const createOferta = async (id_servicio, id_usuario, oferta) => {
+  try {
+    const checkQuery = 'SELECT * FROM ofertas WHERE id_servicio = $1 AND id_usuario = $2'
+    const checkResult = await db.query(checkQuery, [id_servicio, id_usuario])
+
+    if (checkResult.rows.length > 0) {
+      throw new Error('Ya existe una oferta para este servicio por este usuario')
+    }
+    const query = 'INSERT INTO ofertas (id_servicio, id_usuario, oferta) VALUES ($1, $2, $3) RETURNING *'
+    const params = [id_servicio, id_usuario, oferta]
+    const result = await db.query(query, params)
+
+    return result.rows[0]
+  } catch (error) {
+    console.error('Error al crear la oferta:', error)
+    throw error
+  }
+}
 
 const getAllOfertas = async () => {
   try {
-    const result = await db.query('SELECT * FROM ofertas')
+    const query = 'SELECT * FROM ofertas'
+    const result = await db.query(query)
+
+    if (result.rows.length === 0) {
+      throw new Error('No se encontraron ofertas')
+    }
+
     return result.rows
   } catch (error) {
-    console.error('Error al obtener todas las ofertas:', error)
+    console.error('Error al obtener las ofertas:', error)
     throw error
   }
 }
 
-const getOfertaById = async (ofertaId) => {
+const getOfertaById = async (id_oferta) => {
   try {
-    const text = 'SELECT * FROM ofertas WHERE id = $1'
-    const params = [ofertaId]
-    const result = await db.query(text, params)
+    const query = 'SELECT * FROM ofertas WHERE id = $1'
+    const result = await db.query(query, [id_oferta])
+
+    if (result.rows.length === 0) {
+      throw new Error('Oferta no encontrada')
+    }
+
     return result.rows[0]
   } catch (error) {
-    console.error('Error al obtener la oferta por ID:', error)
+    console.error('Error al obtener la oferta:', error)
     throw error
   }
 }
 
-const createOferta = async (req, res) => {
+const updateOferta = async (id_oferta, oferta, estado) => {
   try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() })
+    const checkQuery = 'SELECT * FROM ofertas WHERE id = $1'
+    const checkResult = await db.query(checkQuery, [id_oferta])
+
+    if (checkResult.rows.length === 0) {
+      throw new Error('Oferta no encontrada')
     }
 
-    const { id_servicio, id_usuario, oferta } = req.body
+    const query = 'UPDATE ofertas SET oferta = $1, estado = $2 WHERE id = $3 RETURNING *'
+    const params = [oferta, estado, id_oferta]
+    const result = await db.query(query, params)
 
-    const text = 'INSERT INTO ofertas (id_servicio, id_usuario, oferta) VALUES ($1, $2, $3) RETURNING *'
-    const params = [id_servicio, id_usuario, oferta]
-    const result = await db.query(text, params)
-
-    return res.status(201).json(result.rows[0])
-  } catch (error) {
-    console.error('Error al crear la oferta:', error)
-    return res.status(500).json({ error: 'Error al crear la oferta' })
-  }
-}
-
-const updateOferta = async (req, res, ofertaId) => {
-  try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() })
-    }
-
-    const { id_servicio, id_usuario, oferta } = req.body
-
-    const text = 'UPDATE ofertas SET id_servicio = $1, id_usuario = $2, oferta = $3 WHERE id = $4 RETURNING *'
-    const params = [id_servicio, id_usuario, oferta, ofertaId]
-    const result = await db.query(text, params)
-
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'Oferta no encontrada' })
-    }
-
-    return res.status(200).json(result.rows[0])
+    return result.rows[0]
   } catch (error) {
     console.error('Error al actualizar la oferta:', error)
-    return res.status(500).json({ error: 'Error al actualizar la oferta' })
+    throw error
   }
 }
 
-const deleteOferta = async (req, res, ofertaId) => {
+const deleteOferta = async (id_oferta) => {
   try {
-    const result = await db.query('DELETE FROM ofertas WHERE id = $1', [ofertaId])
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'Oferta no encontrada' })
+    const checkQuery = 'SELECT * FROM ofertas WHERE id = $1'
+    const checkResult = await db.query(checkQuery, [id_oferta])
+
+    if (checkResult.rows.length === 0) {
+      throw new Error('Oferta no encontrada')
     }
-    return res.status(200).json({ message: 'Oferta eliminada correctamente' })
+
+    const deleteQuery = 'DELETE FROM ofertas WHERE id = $1'
+    const result = await db.query(deleteQuery, [id_oferta])
+
+    return { message: 'Oferta eliminada correctamente' }
   } catch (error) {
     console.error('Error al eliminar la oferta:', error)
-    return res.status(500).json({ error: 'Error al eliminar la oferta' })
+    throw error
   }
 }
 
 module.exports = {
+  createOferta,
   getAllOfertas,
   getOfertaById,
-  createOferta,
   updateOferta,
   deleteOferta
 }

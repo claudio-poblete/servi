@@ -1,96 +1,76 @@
-const DatosBancariosModel = require('../models/DatosBancarios')
-
-const getAllDatosBancarios = async (req, res) => {
-	try {
-		const datosBancarios = await DatosBancariosModel.getAllDatosBancarios()
-		res.status(200).json(datosBancarios)
-	} catch (error) {
-		console.error('Error al obtener todos los datos bancarios:', error)
-		res.status(500).json({ error: 'Error al obtener todos los datos bancarios' })
-	}
-}
-
-const getDatosBancariosById = async (req, res) => {
-	try {
-		const {id} = req.params
-		const datosBancarios = await DatosBancariosModel.getDatosBancariosById(id)
-
-		if (!datosBancarios) {
-			return res.status(404).json({ error: 'Datos bancarios no encontrados' })
-		}
-		res.status(200).json(datosBancarios)
-	} catch (error) {
-		console.erro('Error al obtener los datos bancarios por ID:', error)
-		res.status(500).json({ error: 'Error al obtener los datos bancarios por ID' })
-	}
-}
+const { validationResult } = require('express-validator')
+const DatosBancariosModel = require('../models/DatosBancariosModel')
 
 const createDatosBancarios = async (req, res) => {
-	try {
-		const { id_usuario, banco, tipo_de_cuenta, numero_cuenta } = req.body
-		const nuevoDatosBancarios = await
-		DatosBancariosModel.createDatosBancarios({
-			id_usuario,
-			banco,
-			tipo_de_cuenta,
-			numero_cuenta
-		})
+  try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() })
+    }
 
-		res.status(201).json(nuevoDatosBancarios)
-	} catch (error) {
-		console.error('Error al crear los datos bancarios:', error)
-		res.status(500).json({ error: 'Error al crear los datos bancarios' })
-	}
+    const { id_usuario, banco, tipo_de_cuenta, numero_cuenta } = req.body
+    const newDatosBancarios = await DatosBancariosModel.createDatosBancarios(
+      id_usuario,
+      banco,
+      tipo_de_cuenta,
+      numero_cuenta
+    )
+
+    return res.status(201).json(newDatosBancarios)
+  } catch (error) {
+    console.error('Error al crear los datos bancarios:', error)
+    return res.status(500).json({ error: 'Error al crear los datos bancarios' })
+  }
+}
+
+const getDatosBancariosByUserId = async (req, res) => {
+  const { id_usuario } = req.params
+
+  try {
+    const datosBancarios = await DatosBancariosModel.getDatosBancariosByUserId(id_usuario)
+
+    return res.status(200).json(datosBancarios)
+  } catch (error) {
+    console.error('Error al obtener los datos bancarios:', error)
+    return res.status(500).json({ error: 'Error al obtener los datos bancarios' })
+  }
 }
 
 const updateDatosBancarios = async (req, res) => {
-	try {
-		const {id} = req.params
-		const {
-			id_usuario,
-			banco,
-			tipo_de_cuenta,
-			numero_cuenta
-		} = req.body
+  const { id_usuario } = req.params
+  const { banco, tipo_de_cuenta, numero_cuenta } = req.body
 
-		const updated = await DatosBancariosModel.updateDatosBancarios(id, {
-			id_usuario,
-			banco,
-			tipo_de_cuenta,
-			numero_cuenta
-		})
+  try {
+    const updatedDatosBancarios = await DatosBancariosModel.updateDatosBancarios(
+      id_usuario,
+      banco,
+      tipo_de_cuenta,
+      numero_cuenta
+    )
 
-		if (!updated) {
-			return res.status(404).json({ error: 'Datos bancarios no encontrados' })
-		}
-
-		res.status(200).json({ message: 'Datos bancarios actualizados correctamente' })
-	} catch (error) {
-		console.error('Error al actualizar los datos bancarios:', error)
-		res.status(500).json({ error: 'Error al actualizar los datos bancarios' })
-	}
+    return res.status(200).json(updatedDatosBancarios)
+  } catch (error) {
+    console.error('Error al actualizar los datos bancarios:', error)
+    return res.status(500).json({ error: 'Error al actualizar los datos bancarios' })
+  }
 }
 
 const deleteDatosBancarios = async (req, res) => {
-	try {
-		const {id} = req.params
-		const deleted = await DatosBancariosModel.deleteDatosBancarios(id)
+  const { id_usuario } = req.params
 
-		if (!deleted) {
-			return res.status(404).json({ error: 'Datos bancarios no encontrados' })
-		}
+  try {
+    const response = await DatosBancariosModel.deleteDatosBancarios(id_usuario)
 
-		res.satus(200).json({ message: 'Datos bancarios eliminados correctamente' })
-	} catch (error) {
-		console.error('Error al eliminar los datos bancarios:', error)
-		res.status(500).json({ error: 'Error al eliminar los datos bancarios' })
-	}
+    return res.status(200).json(response)
+  } catch (error) {
+    console.error('Error al eliminar los datos bancarios:', error)
+    return res.status(500).json({ error: 'Error al eliminar los datos bancarios' })
+  }
 }
 
 module.exports = {
-  getAllDatosBancarios,
-  getDatosBancariosById,
   createDatosBancarios,
+  getDatosBancariosByUserId,
   updateDatosBancarios,
   deleteDatosBancarios
 }
