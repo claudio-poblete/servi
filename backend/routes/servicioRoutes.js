@@ -1,11 +1,8 @@
 const express = require('express')
 const servicioController = require('../controllers/servicioController')
 const { authenticateToken } = require('../middlewares/authMiddleware')
-const { uploadServiceImage, handleUploadErrors } = require('../middlewares/uploadMiddleware')
 const { validateServiceFields, handleValidationErrors } = require('../middlewares/validationMiddleware')
 const router = express.Router()
-
-console.log(servicioController.createServicio)
 
 router.post(
   '/',
@@ -41,15 +38,5 @@ router.delete(
   servicioController.deleteServicio
 )
 
-router.post(
-  '/:id_servicio/upload',
-  authenticateToken,
-  uploadServiceImage,
-  handleUploadErrors,
-  (req, res) => {
-    const filePath = `/uploads/${req.file.filename}`
-    res.status(200).json({ message: 'Imagen subida con éxito', filePath });
-  }
-)
 
 module.exports = router
