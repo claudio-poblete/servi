@@ -58,7 +58,7 @@ const updateServicio = async (id_servicio, titulo, descripcion, presupuesto, ubi
     }
 
     const query = `
-      UPDATE servicio 
+      UPDATE servicio
       SET titulo = $1, descripcion = $2, presupuesto = $3, ubicacion = $4, id_categoria = $5, estado = $6 
       WHERE id = $7 RETURNING *`
     const params = [titulo, descripcion, presupuesto, ubicacion, id_categoria, estado, id_servicio]
