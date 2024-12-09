@@ -4,10 +4,11 @@ const usuarioController = require('../controllers/usuarioController')
 const authenticateToken = require('../middlewares/authMiddleware')
 const { validateUserFields, handleValidationErrors } = require('../middlewares/validationMiddleware')
 
+
 router.post(
-  '/registro', 
-  validateUserFields, 
-  handleValidationErrors, 
+  '/registro',
+  validateUserFields,
+  handleValidationErrors,
   usuarioController.createUsuario
 )
 router.get('/usuario/:id_usuario', authenticateToken, usuarioController.getUsuarioById)

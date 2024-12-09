@@ -24,12 +24,6 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/usuarios', usuarioRoutes)
-app.use('/api/pagos', pagoRoutes)
-app.use('/api/categorias', categoriaRoutes)
-app.use('/api/servicios', servicioRoutes)
-app.use('/api/resenas', resenaRoutes)
-
-app.use('/api/usuarios', authMiddleware, usuarioRoutes)
 app.use('/api/pagos', authMiddleware, pagoRoutes)
 app.use('/api/categorias', authMiddleware, categoriaRoutes)
 app.use('/api/servicios', authMiddleware, servicioRoutes)
