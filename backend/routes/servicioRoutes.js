@@ -5,6 +5,8 @@ const { uploadServiceImage, handleUploadErrors } = require('../middlewares/uploa
 const { validateServiceFields, handleValidationErrors } = require('../middlewares/validationMiddleware')
 const router = express.Router()
 
+console.log(servicioController.createServicio)
+
 router.post(
   '/',
   authenticateToken,
@@ -45,7 +47,7 @@ router.post(
   uploadServiceImage,
   handleUploadErrors,
   (req, res) => {
-    const filePath = /uploads/${req.file.filename};
+    const filePath = `/uploads/${req.file.filename}`
     res.status(200).json({ message: 'Imagen subida con éxito', filePath });
   }
 )

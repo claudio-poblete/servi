@@ -6,10 +6,10 @@ const storage = multer.diskStorage({
     cb(null, path.join(__dirname, '../uploads'))
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = ${Date.now()}-${Math.round(Math.random() * 1e9)}
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`
     const ext = path.extname(file.originalname).toLowerCase()
-    cb(null, ${file.fieldname}-${uniqueSuffix}${ext})
-  },
+    cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`)
+  }
 })
 
 const fileFilter = (req, file, cb) => {
@@ -36,12 +36,13 @@ const uploadServiceImage = upload.single('imagen_servicio')
 
 const handleUploadErrors = (err, req, res, next) => {
   if (err instanceof multer.MulterError) {
-    return res.status(400).json({ error: Error de subida: ${err.message} })
+    return res.status(400).json({ error: `Error de subida: ${err.message}` })
   } else if (err) {
     return res.status(400).json({ error: err.message })
   }
   next()
 }
+
 
 module.exports = {
   uploadServiceImage,

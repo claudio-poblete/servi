@@ -1,5 +1,5 @@
 const db = require('../config/database')
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcrypt')
 
 const createUsuario = async (nombre, contrasena, email, foto_perfil, descripcion, id_datos_bancarios) => {
   try {
@@ -108,6 +108,10 @@ const deleteUsuario = async (usuarioId) => {
 
     const deleteQuery = 'DELETE FROM usuario WHERE id = $1'
     const result = await db.query(deleteQuery, [usuarioId])
+
+    if (result.rowCount === 0) {
+      throw new Error('No se pudo eliminar el usuario')
+    }
 
     return { message: 'Usuario eliminado correctamente' }
   } catch (error) {

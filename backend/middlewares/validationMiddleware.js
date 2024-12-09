@@ -10,7 +10,7 @@ const validateUserFields = [
     .isEmail().withMessage('El correo electrónico debe tener un formato válido.')
     .custom((value) => {
       const domain = value.split('@')[1]
-      if (!domain || !domain.includes('.')) {
+      if (typeof domain !== 'string' || !domain.includes('.')) {
         throw new Error('El dominio del correo no es válido.')
       }
       return true;
