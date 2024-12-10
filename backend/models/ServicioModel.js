@@ -1,6 +1,6 @@
 const db = require('../config/database')
 
-const createServicio = async (titulo, descripcion, presupuesto, id_usuario, ubicacion, id_categoria) => {
+const crearServicio = async (titulo, descripcion, presupuesto, id_usuario, ubicacion, id_categoria) => {
   try {
     const queryCheck = 'SELECT * FROM servicio WHERE titulo = $1 AND id_usuario = $2'
     const checkResult = await db.query(queryCheck, [titulo, id_usuario])
@@ -20,7 +20,7 @@ const createServicio = async (titulo, descripcion, presupuesto, id_usuario, ubic
   }
 }
 
-const getAllServicios = async () => {
+const obtenerServicios = async () => {
   try {
     const query = 'SELECT * FROM servicio'
     const result = await db.query(query)
@@ -32,7 +32,7 @@ const getAllServicios = async () => {
   }
 }
 
-const getServicioById = async (id_servicio) => {
+const obtenerServiciosPorId = async (id_servicio) => {
   try {
     const query = 'SELECT * FROM servicio WHERE id = $1'
     const result = await db.query(query, [id_servicio])
@@ -48,7 +48,7 @@ const getServicioById = async (id_servicio) => {
   }
 }
 
-const updateServicio = async (id_servicio, titulo, descripcion, presupuesto, ubicacion, id_categoria, estado) => {
+const actualizarServicios = async (id_servicio, titulo, descripcion, presupuesto, ubicacion, id_categoria, estado) => {
   try {
     const checkQuery = 'SELECT * FROM servicio WHERE id = $1'
     const checkResult = await db.query(checkQuery, [id_servicio])
@@ -71,7 +71,7 @@ const updateServicio = async (id_servicio, titulo, descripcion, presupuesto, ubi
   }
 }
 
-const deleteServicio = async (id_servicio) => {
+const eliminarServicio = async (id_servicio) => {
   try {
     const checkQuery = 'SELECT * FROM servicio WHERE id = $1'
     const checkResult = await db.query(checkQuery, [id_servicio])
@@ -91,9 +91,9 @@ const deleteServicio = async (id_servicio) => {
 }
 
 module.exports = {
-  createServicio,
-  getAllServicios,
-  getServicioById,
-  updateServicio,
-  deleteServicio
+  crearServicio,
+  obtenerServicios,
+  obtenerServiciosPorId,
+  actualizarServicios,
+  eliminarServicio
 }

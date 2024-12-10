@@ -1,5 +1,5 @@
 const express = require('express')
-const servicioController = require('../controllers/servicioController')
+const { createServicio, getAllServicios, getServicioById, updateServicio, deleteServicio } = require('../controllers/servicioController');
 const { authenticateToken } = require('../middlewares/authMiddleware')
 const { validateServiceFields, handleValidationErrors } = require('../middlewares/validationMiddleware')
 const router = express.Router()
@@ -9,19 +9,19 @@ router.post(
   authenticateToken,
   validateServiceFields,
   handleValidationErrors,
-  servicioController.createServicio
+  createServicio
 )
 
 router.get(
   '/',
   authenticateToken,
-  servicioController.getAllServicios
+  getAllServicios
 )
 
 router.get(
   '/:id_servicio',
   authenticateToken,
-  servicioController.getServicioById
+  getServicioById
 )
 
 router.put(
@@ -29,13 +29,13 @@ router.put(
   authenticateToken,
   validateServiceFields,
   handleValidationErrors,
-  servicioController.updateServicio
+  updateServicio
 )
 
 router.delete(
   '/:id_servicio',
   authenticateToken,
-  servicioController.deleteServicio
+  deleteServicio
 )
 
 

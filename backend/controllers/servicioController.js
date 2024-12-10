@@ -1,5 +1,11 @@
 const { validationResult } = require('express-validator')
-const ServicioModel = require('../models/ServicioModel')
+const {
+  crearServicio,
+  obtenerServicios,
+  obtenerServiciosPorId,
+  actualizarServicios,
+  eliminarServicio
+} = require('../models/ServicioModel')
 
 const createServicio = async (req, res) => {
   try {
@@ -10,7 +16,7 @@ const createServicio = async (req, res) => {
 
     const { titulo, descripcion, presupuesto, id_usuario, ubicacion, id_categoria } = req.body
 
-    const newServicio = await ServicioModel.createServicio(
+    const newServicio = await crearServicio(
       titulo,
       descripcion,
       presupuesto,
@@ -28,7 +34,7 @@ const createServicio = async (req, res) => {
 
 const getAllServicios = async (req, res) => {
   try {
-    const servicios = await ServicioModel.getAllServicios()
+    const servicios = await obtenerServicios()
 
     return res.status(200).json(servicios)
   } catch (error) {
@@ -41,7 +47,7 @@ const getServicioById = async (req, res) => {
   const { id_servicio } = req.params
 
   try {
-    const servicio = await ServicioModel.getServicioById(id_servicio)
+    const servicio = await obtenerServiciosPorId(id_servicio)
 
     return res.status(200).json(servicio)
   } catch (error) {
@@ -55,7 +61,7 @@ const updateServicio = async (req, res) => {
   const { titulo, descripcion, presupuesto, ubicacion, id_categoria, estado } = req.body
 
   try {
-    const updatedServicio = await ServicioModel.updateServicio(
+    const updatedServicio = await actualizarServicios(
       id_servicio,
       titulo,
       descripcion,
@@ -76,7 +82,7 @@ const deleteServicio = async (req, res) => {
   const { id_servicio } = req.params
 
   try {
-    const response = await ServicioModel.deleteServicio(id_servicio)
+    const response = await eliminarServicio(id_servicio)
 
     return res.status(200).json(response)
   } catch (error) {
