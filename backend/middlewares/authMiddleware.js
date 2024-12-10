@@ -14,7 +14,7 @@ const authenticateToken = async (req, res, next) => {
     }
 
     try {
-      const user = await jwt.verify(token, config.JWT_SECRET)
+      const user = jwt.verify(token, config.jwtSecret)
       res.locals.user = user
       next()
     } catch (err) {
