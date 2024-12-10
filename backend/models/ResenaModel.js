@@ -42,7 +42,7 @@ const getResenaById = async (id_resena) => {
     const result = await db.query(query, [id_resena])
 
     if (result.rows.length === 0) {
-      throw new Error(Reseña con ID ${id_resena} no encontrada)
+      throw new Error(`Reseña con ID ${id_resena} no encontrada`)
     }
 
     return result.rows[0]
@@ -74,7 +74,7 @@ const updateResena = async (id_resena, descripcion, valoracion) => {
     const checkResult = await db.query(checkQuery, [id_resena])
 
     if (checkResult.rows.length === 0) {
-      throw new Error(Reseña con ID ${id_resena} no encontrada)
+      throw new Error(`Reseña con ID ${id_resena} no encontrada`)
     }
 
     const query = 'UPDATE resena SET descripcion = $1, valoracion = $2 WHERE id = $3 RETURNING *'
@@ -94,7 +94,7 @@ const deleteResena = async (id_resena) => {
     const checkResult = await db.query(checkQuery, [id_resena])
 
     if (checkResult.rows.length === 0) {
-      throw new Error(Reseña con ID ${id_resena} no encontrada)
+      throw new Error(`Reseña con ID ${id_resena} no encontrada`)
     }
 
     const deleteQuery = 'DELETE FROM resena WHERE id = $1'

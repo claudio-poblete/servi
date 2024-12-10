@@ -2,6 +2,9 @@ const jwt = require('jsonwebtoken')
 const config = require('../config/config')
 
 const authenticateToken = async (req, res, next) => {
+
+  console.log('Auth Middleware:', req.headers['authorization']);
+
   try {
     const authHeader = req.headers['authorization']
     if (!authHeader) {
@@ -27,4 +30,4 @@ const authenticateToken = async (req, res, next) => {
   }
 }
 
-module.exports = authenticateToken
+module.exports = { authenticateToken };

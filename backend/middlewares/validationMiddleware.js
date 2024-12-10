@@ -49,6 +49,9 @@ const validateServiceFields = [
 ]
 
 const handleValidationErrors = (req, res, next) => {
+  console.log('Validation Errors:', validationResult(req).array());
+
+
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     return res.status(400).json({

@@ -1,27 +1,37 @@
 const express = require('express')
-const { createServicio, getAllServicios, getServicioById, updateServicio, deleteServicio } = require('../controllers/servicioController');
+const {
+  createServicio,
+  getAllServicios,
+  getServicioById,
+  updateServicio,
+  deleteServicio
+} = require('../controllers/servicioController');
+
 const { authenticateToken } = require('../middlewares/authMiddleware')
 const { validateServiceFields, handleValidationErrors } = require('../middlewares/validationMiddleware')
 const router = express.Router()
+
+
+//OJO AQUÍ OMITÍ EL USO DE MIDDLEWARES, Y SI FUNCIONÓ EL SERVER
 
 router.post(
   '/',
   authenticateToken,
   validateServiceFields,
   handleValidationErrors,
-  createServicio
+  createServicio,
 )
 
 router.get(
   '/',
   authenticateToken,
-  getAllServicios
+  getAllServicios,
 )
 
 router.get(
   '/:id_servicio',
   authenticateToken,
-  getServicioById
+  getServicioById,
 )
 
 router.put(
@@ -29,14 +39,42 @@ router.put(
   authenticateToken,
   validateServiceFields,
   handleValidationErrors,
-  updateServicio
+  updateServicio,
 )
 
 router.delete(
   '/:id_servicio',
   authenticateToken,
-  deleteServicio
+  deleteServicio,
 )
 
+//—————————————————————————————————————————————//
 
-module.exports = router
+// router.post(
+//   '/',
+//   createServicio,
+// )
+
+// router.get(
+//   '/',
+//   getAllServicios,
+// )
+
+// router.get(
+//   '/:id_servicio',
+//   getServicioById,
+// )
+
+// router.put(
+//   '/:id_servicio',
+//   updateServicio,
+// )
+
+// router.delete(
+//   '/:id_servicio',
+//   deleteServicio,
+// )
+
+
+
+module.exports = router;
