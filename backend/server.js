@@ -30,12 +30,6 @@ app.use('/api/categorias', authenticateToken, validateServiceFields, handleValid
 app.use('/api/servicios', authenticateToken, validateServiceFields, handleValidationErrors, servicioRoutes)
 app.use('/api/resenas', authenticateToken, validateServiceFields, handleValidationErrors, resenaRoutes)
 
-// app.use('/api/usuarios',usuarioRoutes)
-// app.use('/api/pagos', pagoRoutes)
-// app.use('/api/categorias',categoriaRoutes)
-// app.use('/api/servicios', servicioRoutes)
-// app.use('/api/resenas', resenaRoutes)
-
 app.use((err, req, res, next) => {
   console.error(err.message)
   res.status(err.status || 500).json({

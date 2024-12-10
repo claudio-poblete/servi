@@ -12,8 +12,6 @@ const { validateServiceFields, handleValidationErrors } = require('../middleware
 const router = express.Router()
 
 
-//OJO AQUÍ OMITÍ EL USO DE MIDDLEWARES, Y SI FUNCIONÓ EL SERVER
-
 router.post(
   '/',
   authenticateToken,
@@ -47,33 +45,6 @@ router.delete(
   authenticateToken,
   deleteServicio,
 )
-
-//—————————————————————————————————————————————//
-
-// router.post(
-//   '/',
-//   createServicio,
-// )
-
-// router.get(
-//   '/',
-//   getAllServicios,
-// )
-
-// router.get(
-//   '/:id_servicio',
-//   getServicioById,
-// )
-
-// router.put(
-//   '/:id_servicio',
-//   updateServicio,
-// )
-
-// router.delete(
-//   '/:id_servicio',
-//   deleteServicio,
-// )
 
 
 
