@@ -1,5 +1,5 @@
 const db = require('../config/database')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 
 const createUsuario = async (nombre, contrasena, email, foto_perfil, descripcion, id_datos_bancarios) => {
   try {
