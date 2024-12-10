@@ -24,6 +24,9 @@ app.get('/', (req, res) => {
   res.json({ message: 'Servidor funcionando correctamente' })
 })
 
+
+// —————————————————TENEMOS QUE DEFINIR CUALES RUTAS REQUIEREN AUTENTIFICACIÓN ————————————————————————
+
 app.use('/api/usuarios', authenticateToken, validateServiceFields, handleValidationErrors, usuarioRoutes)
 app.use('/api/pagos', authenticateToken, validateServiceFields, handleValidationErrors, pagoRoutes)
 app.use('/api/categorias', authenticateToken, validateServiceFields, handleValidationErrors, categoriaRoutes)
