@@ -21,8 +21,8 @@ const Dashboard = () => {
       <ProfileInfo />
       <ProfileOffer />
       <ProfileServices />
-      {/* <ProfileHistorial />
-      <PersonalInfoSection /> */}
+      <ProfileHistorial />
+      <PersonalInfoSection />
     </section>
   )
 }

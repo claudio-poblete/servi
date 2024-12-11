@@ -13,7 +13,7 @@ const { validateServiceFields, handleValidationErrors } = require('./middlewares
 const app = express()
 
 app.use(cors({
-  origin: '*',
+  origin: 'http://localhost:5173',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }))
@@ -23,9 +23,6 @@ app.use(express.json())
 app.get('/', (req, res) => {
   res.json({ message: 'Servidor funcionando correctamente' })
 })
-
-
-// —————————————————TENEMOS QUE DEFINIR CUALES RUTAS REQUIEREN AUTENTIFICACIÓN ————————————————————————
 
 app.use('/api/usuarios', authenticateToken, validateServiceFields, handleValidationErrors, usuarioRoutes)
 app.use('/api/pagos', authenticateToken, validateServiceFields, handleValidationErrors, pagoRoutes)

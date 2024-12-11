@@ -44,20 +44,25 @@ const getUsuarioById = async (req, res) => {
 
 const loginUsuario = async (req, res) => {
   const { email, contrasena } = req.body
+  console.log('Login - Email recibido:', email);
   try {
     const usuario = await UsuarioModel.getUsuarioByEmail(email)
     if (!usuario) {
+      console.log('Usuario no encontrado:', email);
       return res.status(400).json({ error: 'Correo electrónico o contraseña incorrectos' })
     }
 
     const isPasswordValid = await bcrypt.compare(contrasena, usuario.contrasena)
     if (!isPasswordValid) {
+      console.log('Contraseña incorrecta para el usuario:', email);
       return res.status(400).json({ error: 'Correo electrónico o contraseña incorrectos' })
     }
 
     const payload = { id: usuario.id, email: usuario.email }
+    console.log('Generando token para el usuario:', usuario.id);
 
     const token = jwt.sign(payload, jwtSecret, { expiresIn: jwtExpiration })
+    console.log('Token generado:', token);
 
     res.status(200).json({ message: 'Login exitoso', token })
   } catch (error) {

@@ -6,11 +6,10 @@ const PrivateRoute = ({ element }) => {
   const { user } = AuthContextModule.useAuth();
 
   if (!user) {
-    // Si no hay usuario, redirige al login :)
     return <Navigate to="/login" replace />;
   }
 
-  return element; // Si el usuario está logueao muestra el componente
+  return element;
 };
 
 PrivateRoute.propTypes = {
