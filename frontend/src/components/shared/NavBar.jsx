@@ -63,7 +63,7 @@ const NavBar = () => {
         {!user ? (
           <>
             <li>
-              <Link to="/about">Cómo Funciona</Link>
+              <Link to="/como-funciona">Cómo Funciona</Link>
             </li>
             <li>
               <Link to="/login">Conéctate</Link>
