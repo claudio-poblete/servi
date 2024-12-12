@@ -1,44 +1,24 @@
-import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import AuthContextModule from "../context/AuthContext";
-import api from '../api';
-import * as jwtDecode from 'jwt-decode';
 
 const Login = () => {
-  const { setUser, login } = AuthContextModule.useAuth();
+  const { login } = AuthContextModule.useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (localStorage.getItem('authToken')) {
-      navigate('/dashboard');
-    }
-  }, [navigate]);
+  const location = useLocation();
+  const state = location.state || {};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
 
     const success = await login(email, password);
 
     if (success) {
-      const token = localStorage.getItem('authToken');
-      try {
-        const decodedToken = jwtDecode(token);
-        const userId = decodedToken.id;
-
-        const userResponse = await api.get(`/usuarios/usuario/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        setUser(userResponse.data);
-        navigate('/dashboard');
-
-      } catch (error) {
-        console.error('Error al obtener los datos del usuario', error);
-        setError('Error al cargar los datos del usuario.');
-      }
+      navigate('/dashboard');
     } else {
       setError('Email o contraseña incorrectos');
     }
@@ -71,6 +51,7 @@ const Login = () => {
       <div className="login-container">
         <h2>Iniciar sesión</h2>
         {error && <p style={{ color: "red" }}>{error}</p>}
+        {state.successMessage && <p style={{ color: 'green' }}>{state.successMessage}</p>}
         <form className="form-container" onSubmit={handleSubmit}>
           <div className="input-container">
             <h4>Email:</h4>

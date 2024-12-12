@@ -26,7 +26,8 @@ const AuthProvider = ({ children }) => {
       const decodedPayload = JSON.parse(atob(payload));
       const userId = decodedPayload.id;
       const response = await api.get(`/usuarios/usuario/${userId}`);
-      setUser(response.data);
+      console.log(response.data)
+      setUser (response.data);
     } catch (error) {
       console.error('Error al obtener los datos del usuario', error);
       logout();
@@ -40,9 +41,9 @@ const AuthProvider = ({ children }) => {
         const { token } = response.data;
         if (token) {
           localStorage.setItem('authToken', token);
-          console.log('Token guardado:', token);
           setAuthToken(token);
           fetchUserData();
+          return true;
         } else {
           console.error('No se recibió un token de acceso');
           return false;
@@ -57,28 +58,19 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (email, password, nombre) => {
+  const register = async (nombre, email, password) => {
     try {
-      const response = await api.post('usuarios/registro', { email, contrasena: password, nombre });
+      const response = await api.post('usuarios/registro', { nombre, email, contrasena: password });
       if (response.status === 201) {
-        const { token } = response.data;
-        if (token) {
-          localStorage.setItem('authToken', token);
-          console.log('Token guardado:', token);
-          setAuthToken(token);
-          fetchUserData();
-          return true;
-        } else {
-          console.error('No se recibió un token de acceso');
-          return false;
-        }
+        console.log('Registro exitoso:', response.data.message);
+        return { success: true, message: response.data.message };
       } else {
         console.error('Error al hacer registro:', response.status, response.statusText);
-        return false;
+        return { success: false, message: 'Error en el registro' };
       }
     } catch (error) {
       console.error('Error al hacer registro:', error.message);
-      return false;
+      return { success: false, message: error.response?.data?.message || 'Error en el registro' };
     }
   };
 

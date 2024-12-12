@@ -4,17 +4,15 @@ const {
   validateUserFields,
   validateServiceFields,
   handleValidationErrors,
-} = require('../middlewares/validationMiddleware'); // Adjust the path as necessary
+} = require('../middlewares/validationMiddleware');
 
 const app = express();
-app.use(express.json()); // To parse JSON request bodies
+app.use(express.json());
 
-// Route for user validation
 app.post('/api/users', validateUserFields, handleValidationErrors, (req, res) => {
   res.status(200).json({ message: 'User  is valid!' });
 });
 
-// Route for service validation
 app.post('/api/services', validateServiceFields, handleValidationErrors, (req, res) => {
   res.status(200).json({ message: 'Service is valid!' });
 });
@@ -25,13 +23,13 @@ describe('Validation Middleware', () => {
       const response = await request(app)
         .post('/api/users')
         .send({
-          nombre: '', // Invalid
-          email: 'invalid-email', // Invalid
-          contrasena: 'short', // Invalid
+          nombre: '',
+          email: 'invalid-email',
+          contrasena: 'short',
         });
 
       expect(response.status).toBe(400);
-      expect(response.body.errors).toHaveLength(5); // Expecting 5 validation errors
+      expect(response.body.errors).toHaveLength(5);
     });
 
     it('should return 200 if the user fields are valid', async () => {
@@ -53,12 +51,12 @@ describe('Validation Middleware', () => {
       const response = await request(app)
         .post('/api/services')
         .send({
-          titulo: '', // Invalid
+          titulo: '',
           descripcion: 'A valid description',
-          presupuesto: -10, // Invalid
-          id_usuario: 'not-an-integer', // Invalid
+          presupuesto: -10,
+          id_usuario: 'not-an-integer',
           ubicacion: 'Location',
-          id_categoria: 0, // Invalid
+          id_categoria: 0,
         });
 
       expect(response.status).toBe(400);

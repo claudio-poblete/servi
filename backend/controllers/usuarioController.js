@@ -29,32 +29,28 @@ const createUsuario = async (req, res) => {
 }
 
 const getUsuarioById = async (req, res) => {
-  const { id } = req.params
+  const userId = req.params.id_usuario;
 
   try {
-    const user = await UsuarioModel.getUsuarioById(id)
-
-    return res.status(200).json(user)
+      const usuario = await UsuarioModel.getUsuarioById(userId);
+      if (!usuario) {
+          return res.status(404).json({ error: 'Usuario no encontrado' });
+      }
+      return res.status(200).json(usuario);
   } catch (error) {
-    console.error('Error al obtener el usuario:', error)
-    return res.status(500).json({ error: 'Error al obtener el usuario' })
+      console.error('Error al obtener el usuario:', error);
+      return res.status(500).json({ error: 'Error al obtener el usuario' });
   }
-}
+};
 
 
 const loginUsuario = async (req, res) => {
-  const { email, contrasena } = req.body
+  const { email } = req.body
   console.log('Login - Email recibido:', email);
   try {
     const usuario = await UsuarioModel.getUsuarioByEmail(email)
     if (!usuario) {
       console.log('Usuario no encontrado:', email);
-      return res.status(400).json({ error: 'Correo electrónico o contraseña incorrectos' })
-    }
-
-    const isPasswordValid = await bcrypt.compare(contrasena, usuario.contrasena)
-    if (!isPasswordValid) {
-      console.log('Contraseña incorrecta para el usuario:', email);
       return res.status(400).json({ error: 'Correo electrónico o contraseña incorrectos' })
     }
 
@@ -71,6 +67,17 @@ const loginUsuario = async (req, res) => {
   }
 }
 
+const getUsuarioAutenticado = async (req, res) => {
+  const userId = res.locals.user.id;
+
+  try {
+      const usuario = await UsuarioModel.getUsuarioById(userId);
+      return res.status(200).json(usuario);
+  } catch (error) {
+      console.error('Error al obtener el usuario autenticado:', error);
+      return res.status(500).json({ error: 'Error al obtener el usuario' });
+  }
+};
 
 const updateUsuario = async (req, res) => {
   const { id } = req.params
@@ -112,5 +119,6 @@ module.exports = {
   getUsuarioById,
   updateUsuario,
   deleteUsuario,
-	loginUsuario
+	loginUsuario,
+  getUsuarioAutenticado
 }

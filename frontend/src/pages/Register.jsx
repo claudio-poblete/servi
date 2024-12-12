@@ -11,20 +11,21 @@ const Register = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (password !== confirmPassword) {
       setError("Las contraseñas no coinciden");
       return;
     }
-
-    const isRegistered = register(nombre, email, password);
-
-    if (isRegistered) {
-      navigate("/dashboard"); // Redirige a la página de dashboard después del registro exitoso
-    } else {
-      setError("No se pudo completar el registro. Inténtalo de nuevo.");
+    try {
+      const { success, message } = await register(nombre, email, password);
+      if (success) {
+        navigate("/login", { state: { successMessage: 'Registro éxitoso, ahora puede logearte' } });
+      } else {
+        setError(message);
+      }
+    } catch (err) {
+      setError("Error en el registro: " + err.message);
     }
   };
 
@@ -32,9 +33,9 @@ const Register = () => {
     <div className="register-main-wrapper">
       <div className="login-container">
         <h2>Registrar cuenta</h2>
-        {error && <p style={{ color: "red" }}>{error}</p>} {/* Error de registro */}
+        {error && <p style={{ color: "red" }}>{error}</p>}
         <form className="form-container" onSubmit={handleSubmit}>
-        <div className="input-container">
+          <div className="input-container">
             <h4>Nombre:</h4>
             <input
               className="input-register"

@@ -11,7 +11,8 @@ router.post(
   handleValidationErrors,
   usuarioController.createUsuario
 )
-router.get('/usuario/:id_usuario', authenticateToken, usuarioController.getUsuarioById)
+router.get('/usuario/:id_usuario', authenticateToken, usuarioController.getUsuarioById);
+router.get('/usuario/me', authenticateToken, usuarioController.getUsuarioAutenticado);
 router.put(
   '/usuario/:id_usuario',
   authenticateToken,
