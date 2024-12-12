@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import AuthContextModule from "../context/AuthContext";
 import api from '../api';
 import * as jwtDecode from 'jwt-decode';
@@ -97,6 +97,7 @@ const Login = () => {
           <button className="btn-primary" type="submit">
             Ingresar
           </button>
+          <Link to="/register" className="link-to">¿No tienes cuenta? ¡Regístrate aquí!</Link>
         </form>
       </div>
     </div>
