@@ -13,6 +13,7 @@ const authenticateToken = async (req, res, next) => {
     }
 
     const token = authHeader.split(' ')[1]
+    console.log('Extracted Token:', token);
     if (!token) {
       console.log('No se encontró el token');
       return res.status(401).json({ error: 'Token no proporcionado. Por favor, autentíquese.' })

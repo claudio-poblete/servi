@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
   res.json({ message: 'Servidor funcionando correctamente' })
 })
 
-app.use('/api/usuarios', authenticateToken, validateServiceFields, handleValidationErrors, usuarioRoutes)
+app.use('/api/usuarios',usuarioRoutes)
 app.use('/api/pagos', authenticateToken, validateServiceFields, handleValidationErrors, pagoRoutes)
 app.use('/api/categorias', authenticateToken, validateServiceFields, handleValidationErrors, categoriaRoutes)
 app.use('/api/servicios', authenticateToken, validateServiceFields, handleValidationErrors, servicioRoutes)
