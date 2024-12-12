@@ -1,8 +1,3 @@
-import ButtonLink from "../buttons/ButtonLink";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowRightLong
-} from "@fortawesome/free-solid-svg-icons";
 import comofunciona1 from "../../assets/image/comofunciona1.png";
 import comofunciona2 from "../../assets/image/comofunciona2.png";
 import comofunciona3 from "../../assets/image/comofunciona3.png";
@@ -43,11 +38,6 @@ const ComoFuncionaHero = () => {
               <img src={comofunciona3} alt="Como Funciona" />
             </div>
           </div>
-        </div>
-        <div className="boton-comofunciona">
-          <ButtonLink to="/como-funciona" className="btn-terciary">
-            Aprende Más <FontAwesomeIcon icon={faArrowRightLong} />
-          </ButtonLink>
         </div>
       </section>
     </div>
