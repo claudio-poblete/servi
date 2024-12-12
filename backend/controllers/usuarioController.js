@@ -29,23 +29,21 @@ const createUsuario = async (req, res) => {
 }
 
 const getUsuarioById = async (req, res) => {
-  const token = req.headers.authorization.split(' ')[1];
-  const decoded = jwt.verify(token, jwtSecret);
-  const id = decoded.id;
+  const { id } = req.params
 
   try {
-    const user = await UsuarioModel.getUsuarioById(id);
+    const user = await UsuarioModel.getUsuarioById(id)
 
-    return res.status(200).json(user);
+    return res.status(200).json(user)
   } catch (error) {
-    console.error('Error al obtener el usuario:', error);
-    return res.status(500).json({ error: 'Error al obtener el usuario' });
+    console.error('Error al obtener el usuario:', error)
+    return res.status(500).json({ error: 'Error al obtener el usuario' })
   }
 }
 
 
 const loginUsuario = async (req, res) => {
-  const { email } = req.body
+  const { email, contrasena } = req.body
   console.log('Login - Email recibido:', email);
   try {
     const usuario = await UsuarioModel.getUsuarioByEmail(email)
@@ -54,11 +52,11 @@ const loginUsuario = async (req, res) => {
       return res.status(400).json({ error: 'Correo electrónico o contraseña incorrectos' })
     }
 
-    /*const isPasswordValid = await bcrypt.compare(contrasena, usuario.contrasena)
+    const isPasswordValid = await bcrypt.compare(contrasena, usuario.contrasena)
     if (!isPasswordValid) {
       console.log('Contraseña incorrecta para el usuario:', email);
       return res.status(400).json({ error: 'Correo electrónico o contraseña incorrectos' })
-    }*/
+    }
 
     const payload = { id: usuario.id, email: usuario.email }
     console.log('Generando token para el usuario:', usuario.id);
