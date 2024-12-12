@@ -67,7 +67,7 @@ const useAuth = () => {
     throw new Error('useAuth debe ser usado dentro de un AuthProvider');
   }
   return context;
-};
+};git 
 
 const AuthContextModule = {
   AuthProvider,
