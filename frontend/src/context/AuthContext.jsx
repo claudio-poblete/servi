@@ -1,7 +1,7 @@
-/* eslint-disable react/prop-types */
 import { createContext, useState, useContext, useEffect } from 'react';
 import api from '../api';
 import * as jwtDecode from 'jwt-decode';
+import PropTypes from 'prop-types';
 
 const AuthContext = createContext();
 
@@ -57,6 +57,8 @@ const AuthProvider = ({ children }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
+
+
 const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -71,4 +73,3 @@ const AuthContextModule = {
 };
 
 export default AuthContextModule;
-
