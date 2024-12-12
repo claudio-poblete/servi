@@ -72,4 +72,8 @@ const AuthContextModule = {
   useAuth,
 };
 
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
 export default AuthContextModule;
