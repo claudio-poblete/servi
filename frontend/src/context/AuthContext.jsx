@@ -57,9 +57,7 @@ const AuthProvider = ({ children }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-AuthProvider.propTypes = {
-  children: PropTypes.node.isRequired,
-};
+
 
 const useAuth = () => {
   const context = useContext(AuthContext);
@@ -67,7 +65,7 @@ const useAuth = () => {
     throw new Error('useAuth debe ser usado dentro de un AuthProvider');
   }
   return context;
-};git 
+};
 
 const AuthContextModule = {
   AuthProvider,
