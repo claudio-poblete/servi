@@ -7,7 +7,7 @@ import AuthContextModule from "./context/AuthContext";
 import Galeria from "./pages/Galeria";
 import NavBar from "./components/shared/NavBar";
 import Dashboard from "./pages/Dashboard";
-import ComoFunciona from "./components/shared/ComoFunciona";
+import ComoFunciona from "./pages/ComoFunciona";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";

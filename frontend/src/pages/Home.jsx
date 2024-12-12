@@ -1,4 +1,4 @@
-import ComoFunciona from '../components/shared/ComoFunciona'
+import ComoFunciona from '../components/shared/ComoFuncionaHero'
 import Hero from '../components/shared/Hero'
 import BannerServiGallery from '../components/shared/BannerServiGallery'
 import CarruselCategorias from '../components/shared/CarruselCategorias'

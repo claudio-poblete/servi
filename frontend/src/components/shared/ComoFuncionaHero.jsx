@@ -7,7 +7,7 @@ import comofunciona1 from "../../assets/image/comofunciona1.png";
 import comofunciona2 from "../../assets/image/comofunciona2.png";
 import comofunciona3 from "../../assets/image/comofunciona3.png";
 
-const ComoFunciona = () => {
+const ComoFuncionaHero = () => {
   return (
     <div className="grid-container-home">
       <section className="comofunciona">
@@ -54,4 +54,4 @@ const ComoFunciona = () => {
   );
 };
 
-export default ComoFunciona;
+export default ComoFuncionaHero;
