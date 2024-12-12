@@ -28,6 +28,7 @@ const createUsuario = async (nombre, contrasena, email, foto_perfil, descripcion
 }
 
 const getUsuarioById = async (usuarioId) => {
+  console.log('Llamando a getUsuarioById con ID:', usuarioId)
   try {
     const query = 'SELECT * FROM usuario WHERE id = $1'
     const result = await db.query(query, [usuarioId])
