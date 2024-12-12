@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 
 const Register = () => {
   const { register } = AuthContextModule.useAuth();
+  const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -18,7 +19,7 @@ const Register = () => {
       return;
     }
 
-    const isRegistered = register(email, password);
+    const isRegistered = register(nombre, email, password);
 
     if (isRegistered) {
       navigate("/dashboard"); // Redirige a la página de dashboard después del registro exitoso
@@ -33,6 +34,17 @@ const Register = () => {
         <h2>Registrar cuenta</h2>
         {error && <p style={{ color: "red" }}>{error}</p>} {/* Error de registro */}
         <form className="form-container" onSubmit={handleSubmit}>
+        <div className="input-container">
+            <h4>Nombre:</h4>
+            <input
+              className="input-register"
+              type="text"
+              id="nombre"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              required
+            />
+          </div>
           <div className="input-container">
             <h4>Email:</h4>
             <input

@@ -57,18 +57,41 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  const register = async (email, password, nombre) => {
+    try {
+      const response = await api.post('usuarios/registro', { email, contrasena: password, nombre });
+      if (response.status === 201) {
+        const { token } = response.data;
+        if (token) {
+          localStorage.setItem('authToken', token);
+          console.log('Token guardado:', token);
+          setAuthToken(token);
+          fetchUserData();
+          return true;
+        } else {
+          console.error('No se recibió un token de acceso');
+          return false;
+        }
+      } else {
+        console.error('Error al hacer registro:', response.status, response.statusText);
+        return false;
+      }
+    } catch (error) {
+      console.error('Error al hacer registro:', error.message);
+      return false;
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem('authToken');
     setAuthToken(null);
     setUser(null);
   };
 
-  const value = { user, login, logout };
+  const value = { user, login, logout, register };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
-
-
 
 const useAuth = () => {
   const context = useContext(AuthContext);
