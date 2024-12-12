@@ -620,3 +620,9 @@ align-items: center;
 .titulo-service {
   margin: 100px 0 40px;
 }
+
+
+.link-to {
+  text-decoration: none;
+  color: #333333;
+}

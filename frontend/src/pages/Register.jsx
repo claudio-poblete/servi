@@ -1,6 +1,6 @@
 import { useState } from "react";
 import AuthContextModule from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import ButtonLink from "../components/buttons/ButtonLink";
 
 const Register = () => {
@@ -70,6 +70,7 @@ const Register = () => {
           <button className="btn-primary" type="submit">
             Registrarse
           </button>
+          <Link to="/login" className="link-to">¿Ya tienes cuenta? ¡Conéctate aquí!</Link>
         </form>
       </div>
     </div>
