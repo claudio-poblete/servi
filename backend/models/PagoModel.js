@@ -125,9 +125,6 @@ const deletePago = async (id_pago) => {
       throw new Error('Pago no encontrado')
     }
 
-    const deleteQuery = 'DELETE FROM pago WHERE id = $1'
-    const result = await db.query(deleteQuery, [id_pago])
-
     return { message: 'Pago eliminado correctamente' }
   } catch (error) {
     console.error('Error al eliminar el pago:', error)

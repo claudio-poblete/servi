@@ -12,10 +12,15 @@ const ServiceCard = ({ servicio }) => {
         </div>
         <div className="titulo-service">
           <h4>{servicio.titulo}</h4>
-          <p>CLP ${servicio.presupuesto.toLocaleString("es-CL")}</p>
+          <p>
+            CLP{" "}
+            {servicio.presupuesto
+              ? servicio.presupuesto.toLocaleString("es-CL")
+              : "No disponible"}
+          </p>
         </div>
       </div>
-      <button className="btn-primary">Ofertar</button>
+      <button className="btn-primary">Editar</button>
     </div>
   );
 };
@@ -24,8 +29,9 @@ ServiceCard.propTypes = {
   servicio: PropTypes.shape({
     ubicacion: PropTypes.string.isRequired,
     titulo: PropTypes.string.isRequired,
-    presupuesto: PropTypes.number.isRequired, // Validación del nuevo campo
+    presupuesto: PropTypes.number,
   }).isRequired,
 };
 
 export default ServiceCard;
+

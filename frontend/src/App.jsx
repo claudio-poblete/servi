@@ -17,23 +17,23 @@ import ScrollToTop from "./components/utils/ScrollToTop";
 
 function App() {
   return (
-    <AuthContextModule.AuthProvider>
-      <Router>
+    <Router>
+      <AuthContextModule.AuthProvider>
         <ScrollToTop />
         <div className="main-wrapper">
           <NavBar />
           <Routes>
+            <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/galeria/:categoriaId" element={<Galeria />} />
             <Route path="/como-funciona" element={<ComoFunciona />} />
-            <Route path="/" element={<Home />} />
           </Routes>
           <Footer />
         </div>
-      </Router>
-    </AuthContextModule.AuthProvider>
+      </AuthContextModule.AuthProvider>
+    </Router>
   );
 }
 

@@ -1,41 +1,33 @@
 const express = require('express')
-const {
-  createServicio,
-  getAllServicios,
-  getServicioById,
-  updateServicio,
-  deleteServicio
-} = require('../controllers/servicioController');
-
+const { createServicio, getAllServicios, getServicioById, getServiciosUsuario,
+  updateServicio, deleteServicio} = require('../controllers/servicioController');
 const { authenticateToken } = require('../middlewares/authMiddleware')
-const { validateServiceFields, handleValidationErrors } = require('../middlewares/validationMiddleware')
+const { handleValidationErrors } = require('../middlewares/validationMiddleware')
 const router = express.Router()
 
 
 router.post(
   '/',
   authenticateToken,
-  validateServiceFields,
   handleValidationErrors,
   createServicio,
 )
 
+router.get( '/', getAllServicios,)
+
 router.get(
-  '/',
+  '/mis-servicios/:id_usuario',
   authenticateToken,
-  getAllServicios,
+  getServiciosUsuario,
 )
 
 router.get(
   '/:id_servicio',
-  authenticateToken,
   getServicioById,
 )
 
 router.put(
   '/:id_servicio',
-  authenticateToken,
-  validateServiceFields,
   handleValidationErrors,
   updateServicio,
 )

@@ -3,6 +3,7 @@ const config = require('../config/config');
 
 const authenticateToken = async (req, res, next) => {
     const authHeader = req.headers['authorization'];
+    console.log('Authorization Header:', authHeader);
     if (!authHeader) {
         return res.status(401).json({ error: 'Token no proporcionado. Por favor, autentíquese.' });
     }

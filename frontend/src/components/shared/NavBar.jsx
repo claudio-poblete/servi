@@ -6,7 +6,6 @@ import ButtonLink from "../buttons/ButtonLink";
 
 const NavBar = () => {
   const { user, logout } = AuthContextModule.useAuth();
-
   const handleLogout = () => {
     logout();
   };
@@ -83,7 +82,7 @@ const NavBar = () => {
               <Link to="/dashboard">¡ Hola ! {user.nombre}</Link>
             </li>
             <li>
-              <Link onClick={handleLogout}>Cerrar Sesión</Link>
+              <Link onClick={handleLogout} to='/'>Cerrar Sesión</Link>
             </li>
             <li>
               <Link>

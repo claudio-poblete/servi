@@ -2,6 +2,7 @@ const { validationResult } = require('express-validator')
 const {
   crearServicio,
   obtenerServicios,
+  obtenerServiciosPorUsuario,
   obtenerServiciosPorId,
   actualizarServicios,
   eliminarServicio
@@ -40,6 +41,18 @@ const getAllServicios = async (req, res) => {
   } catch (error) {
     console.error('Error al obtener los servicios:', error)
     return res.status(500).json({ error: error.message || 'Error al obtener los servicios' })
+  }
+}
+
+const getServiciosUsuario = async (req, res) => {
+  const { id_usuario } = req.params;
+
+  try {
+    const servicios = await obtenerServiciosPorUsuario(id_usuario)
+    return res.status(200).json(servicios)
+  } catch (error) {
+    console.error('Error al obtener los servicios del usuario:', error)
+    return res.status(500).json({ error: error.message || 'Error al obtener los servicios del usuario' })
   }
 }
 
@@ -94,6 +107,7 @@ const deleteServicio = async (req, res) => {
 module.exports = {
   createServicio,
   getAllServicios,
+  getServiciosUsuario,
   getServicioById,
   updateServicio,
   deleteServicio

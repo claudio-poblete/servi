@@ -43,6 +43,24 @@ const getOfertaById = async (req, res) => {
   }
 }
 
+const getOfertasByUsuario = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const ofertas = await OfertaModel.getOfertasByUsuario(userId);
+
+    if (!ofertas || ofertas.length === 0) {
+      return res.status(200).json({ message: 'No tienes ofertas aún.', data: [] });
+    }
+
+    return res.status(200).json({ data: ofertas });
+  } catch (error) {
+    console.error('Error al obtener las ofertas del usuario:', error);
+    return res.status(500).json({ error: 'Error al obtener las ofertas del usuario.' });
+  }
+};
+
+
 const updateOferta = async (req, res) => {
   const { id_oferta } = req.params
   const { oferta, estado } = req.body
@@ -74,6 +92,7 @@ module.exports = {
   createOferta,
   getAllOfertas,
   getOfertaById,
+  getOfertasByUsuario,
   updateOferta,
   deleteOferta
 }

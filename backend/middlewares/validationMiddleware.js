@@ -22,32 +22,6 @@ const validateUserFields = [
     .notEmpty().withMessage('La contraseña es obligatoria.'),
 ]
 
-const validateServiceFields = [
-  check('titulo')
-    .isString().withMessage('El título debe ser un texto válido.')
-    .notEmpty().withMessage('El título es obligatorio.'),
-
-  check('descripcion')
-    .isString().withMessage('La descripción debe ser un texto válido.')
-    .notEmpty().withMessage('La descripción es obligatoria.'),
-
-  check('presupuesto')
-    .isFloat({ min: 0 }).withMessage('El presupuesto debe ser un número válido y positivo.')
-    .notEmpty().withMessage('El presupuesto es obligatorio.'),
-
-  check('id_usuario')
-    .isInt({ min: 1 }).withMessage('El ID del usuario debe ser un número entero positivo.')
-    .notEmpty().withMessage('El ID del usuario es obligatorio.'),
-
-  check('ubicacion')
-    .isString().withMessage('La ubicación debe ser un texto válido.')
-    .notEmpty().withMessage('La ubicación es obligatoria.'),
-
-  check('id_categoria')
-    .isInt({ min: 1 }).withMessage('El ID de la categoría debe ser un número entero positivo.')
-    .notEmpty().withMessage('El ID de la categoría es obligatorio.'),
-]
-
 const handleValidationErrors = (req, res, next) => {
   console.log('Validation Errors:', validationResult(req).array());
 
@@ -66,6 +40,5 @@ const handleValidationErrors = (req, res, next) => {
 
 module.exports = {
   validateUserFields,
-  validateServiceFields,
   handleValidationErrors,
 }

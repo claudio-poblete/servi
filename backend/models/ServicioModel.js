@@ -32,6 +32,18 @@ const obtenerServicios = async () => {
   }
 }
 
+const obtenerServiciosPorUsuario = async (id_usuario) => {
+  try {
+    const query = 'SELECT * FROM servicio WHERE id_usuario = $1 AND estado = TRUE' // Solo los servicios activos
+    const result = await db.query(query, [id_usuario])
+
+    return result.rows
+  } catch (error) {
+    console.error('Error al obtener los servicios del usuario:', error)
+    throw error
+  }
+}
+
 const obtenerServiciosPorId = async (id_servicio) => {
   try {
     const query = 'SELECT * FROM servicio WHERE id = $1'
@@ -93,6 +105,7 @@ const eliminarServicio = async (id_servicio) => {
 module.exports = {
   crearServicio,
   obtenerServicios,
+  obtenerServiciosPorUsuario,
   obtenerServiciosPorId,
   actualizarServicios,
   eliminarServicio

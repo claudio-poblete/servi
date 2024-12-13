@@ -1,24 +1,26 @@
-import PropTypes from "prop-types"; // Importar PropTypes
+import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 
-const OfferCard = ({ oferta, usuario, servicio }) => {
+const OfferCard = ({ oferta, servicio, usuario }) => {
   return (
     <div className="offer-card">
       <div className="offer-card-title-container">
         <div className="infopersonal-offercard">
           <img
-            src={usuario.fotoPerfil || "foto de perfil generica"}
-            alt={`Foto de perfil de ${usuario.nombre}`}
+            src={oferta.fotoPerfil || "/default-profile.png"}
+            alt={`Foto de perfil del usuario que realizó la oferta`}
           />
           <div>
             <div className="nombre-valoracion-ofercard">
               <h5>
-                <Link to={`/perfil/${usuario.id}`}>{usuario.nombre}</Link>
+                <Link to={`/perfil/${usuario.id_usuario}`}>
+                  {usuario.nombre_usuario || "Usuario desconocido"}
+                </Link>
               </h5>
               <span>
-                {usuario.valoracion}{" "}
+                {usuario.valoracion || "Sin valoración"}{" "}
                 <FontAwesomeIcon className="star-ref" icon={faStar} />
               </span>
             </div>
@@ -31,9 +33,9 @@ const OfferCard = ({ oferta, usuario, servicio }) => {
       <div className="offer-card-detail-container">
         <div className="ubicacion-card">
           <FontAwesomeIcon icon={faLocationDot} />
-          <p>{servicio.ubicacion}</p>
+          <p>{servicio.ubicacion || "Ubicación no especificada"}</p>
         </div>
-        <h4>{servicio.titulo}</h4>
+        <h4>{servicio.titulo || "Título no disponible"}</h4>
         <h5>CLP ${oferta.oferta.toLocaleString("es-CL")}</h5>
       </div>
       <button className="btn-primary">Aceptar Oferta</button>
@@ -41,23 +43,27 @@ const OfferCard = ({ oferta, usuario, servicio }) => {
   );
 };
 
-// Validación de props con PropTypes
 OfferCard.propTypes = {
   oferta: PropTypes.shape({
-    oferta: PropTypes.number.isRequired,
-    id: PropTypes.number.isRequired,
-  }).isRequired,
-  usuario: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    nombre: PropTypes.string.isRequired,
+    id_oferta: PropTypes.number.isRequired,
+    id_usuario: PropTypes.number.isRequired,
+    nombre_usuario: PropTypes.string,
     fotoPerfil: PropTypes.string,
-    valoracion: PropTypes.number.isRequired,
+    valoracion: PropTypes.number,
+    oferta: PropTypes.number.isRequired,
   }).isRequired,
   servicio: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    id_servicio: PropTypes.number.isRequired,
     titulo: PropTypes.string.isRequired,
     ubicacion: PropTypes.string.isRequired,
+  }).isRequired,
+  usuario: PropTypes.shape({
+    id_usuario: PropTypes.number.isRequired,
+    nombre_usuario: PropTypes.string,
+    valoracion: PropTypes.number,
   }).isRequired,
 };
 
 export default OfferCard;
+
+

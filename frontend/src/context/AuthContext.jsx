@@ -1,16 +1,21 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import api from '../api';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
+
 
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [authToken, setAuthToken] = useState(localStorage.getItem('authToken') || null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (authToken) {
       fetchUserData();
+    } else {
+      console.log('Esperando el token...');
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authToken]);
@@ -42,6 +47,7 @@ const AuthProvider = ({ children }) => {
         if (token) {
           localStorage.setItem('authToken', token);
           setAuthToken(token);
+          console.log('Token guardado:', token);
           fetchUserData();
           return true;
         } else {
@@ -78,6 +84,7 @@ const AuthProvider = ({ children }) => {
     localStorage.removeItem('authToken');
     setAuthToken(null);
     setUser(null);
+    navigate('/');
   };
 
   const value = { user, login, logout, register };

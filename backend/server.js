@@ -6,9 +6,10 @@ const usuarioRoutes = require('./routes/usuarioRoutes')
 const pagoRoutes = require('./routes/pagoRoutes')
 const categoriaRoutes = require('./routes/categoriaRoutes')
 const servicioRoutes = require('./routes/servicioRoutes')
+const ofertaRoutes = require('./routes/ofertaRoutes')
 const resenaRoutes = require('./routes/resenaRoutes')
 const { authenticateToken } = require('./middlewares/authMiddleware')
-const { validateServiceFields, handleValidationErrors } = require('./middlewares/validationMiddleware')
+const { handleValidationErrors } = require('./middlewares/validationMiddleware')
 
 const app = express()
 
@@ -25,10 +26,11 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/usuarios',usuarioRoutes)
-app.use('/api/pagos', authenticateToken, validateServiceFields, handleValidationErrors, pagoRoutes)
-app.use('/api/categorias', authenticateToken, validateServiceFields, handleValidationErrors, categoriaRoutes)
-app.use('/api/servicios', authenticateToken, validateServiceFields, handleValidationErrors, servicioRoutes)
-app.use('/api/resenas', authenticateToken, validateServiceFields, handleValidationErrors, resenaRoutes)
+app.use('/api/ofertas', ofertaRoutes)
+app.use('/api/pagos', authenticateToken, handleValidationErrors, pagoRoutes)
+app.use('/api/categorias', authenticateToken, handleValidationErrors, categoriaRoutes)
+app.use('/api/servicios', handleValidationErrors, servicioRoutes)
+app.use('/api/resenas', authenticateToken, handleValidationErrors, resenaRoutes)
 
 app.use((err, req, res, next) => {
   console.error(err.message)

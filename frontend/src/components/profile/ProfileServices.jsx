@@ -1,21 +1,43 @@
-import { mockData } from "../../data/mockData";
+import { useEffect, useState } from "react";
 import ServiceCard from "../cards/ServiceCard";
 import AuthContextModule from "../../context/AuthContext";
+import api from "../../api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 
 const ProfileServices = () => {
   const { user } = AuthContextModule.useAuth();
+  const [serviciosUsuario, setServiciosUsuario] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  if (!user) {
-    return <h4>Cargando servicios...</h4>;
+  useEffect(() => {
+    if (user) {
+      fetchUserServices();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  const fetchUserServices = async () => {
+    try {
+      const response = await api.get(`/servicios/mis-servicios/${user.id}`);
+      setServiciosUsuario(response.data);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error al obtener los servicios:", err);
+      setError("Error al obtener los servicios.");
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return <div>Cargando servicios...</div>;
   }
 
-  // Filtrar los servicios creados por el usuario actual
-  const serviciosUsuario =
-    mockData.servicios?.filter((servicio) => servicio.idUsuario === user.id) ||
-    [];
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <section className="services-section">
@@ -39,3 +61,4 @@ const ProfileServices = () => {
 };
 
 export default ProfileServices;
+

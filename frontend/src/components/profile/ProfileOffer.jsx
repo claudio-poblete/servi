@@ -1,28 +1,50 @@
+import { useEffect, useState } from "react";
 import OfferCard from "../cards/OfferCard";
-import { mockData } from "../../data/mockData";
 import AuthContextModule from "../../context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import api from "../../api";
 
 const ProfileOffer = () => {
   const { user } = AuthContextModule.useAuth();
+  const [ofertas, setOfertas] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  if (!user) {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        console.log("Fetching data for user:", user.id);
+        const response = await api.get(`/ofertas/usuario/${user.id}`);
+        console.log("API Response:", response.data);
+        const ofertasInactivas = response.data.data.filter(oferta => oferta.estado_oferta === false);
+        setOfertas(ofertasInactivas);
+      } catch (err) {
+        console.error('Error al cargar los datos:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user) {
+      fetchData();
+    }
+  }, [user]);
+
+  if (loading) {
     return <h4>Cargando ofertas...</h4>;
   }
 
-  const publicacionesUsuario =
-    mockData.servicios?.filter(
-      (servicio) => servicio.idUsuario === user.id
-    ) || [];
-
-  const ofertasUsuario =
-    mockData.ofertas?.filter((oferta) =>
-      publicacionesUsuario.some(
-        (publicacion) => publicacion.id === oferta.idServicio
-      )
-    ) || [];
+  if (error) {
+    return (
+      <div className="error-container">
+        <h4>No hay ofertas para tus publicaciones</h4>
+        <p>Parece que aún no hay ofertas asociadas a tus servicios. ¡Intenta publicar más servicios para atraer ofertas!</p>
+      </div>
+    );
+  }
 
   return (
     <section className="ofertas-solicitudes">
@@ -33,29 +55,21 @@ const ProfileOffer = () => {
         </Link>
       </div>
       <div className="ofertas-container">
-        {ofertasUsuario.length > 0 ? (
-          ofertasUsuario.map((oferta) => {
-            const usuarioOferta = mockData.usuarios.find(
-              (u) => u.id === oferta.idUsuario
-            );
-            const publicacionOferta = mockData.servicios.find(
-              (servicio) => servicio.id === oferta.idServicio
-            );
-
-            // Validar que usuarioOferta y publicacionOferta existan
-            if (!usuarioOferta || !publicacionOferta) {
-              return null;
-            }
-
-            return (
-              <OfferCard
-                key={oferta.id}
-                oferta={oferta}
-                usuario={usuarioOferta}
-                servicio={publicacionOferta}
-              />
-            );
-          })
+        {ofertas.length > 0 ? (
+            ofertas.map((oferta) => {
+              console.log("Datos de la oferta:", oferta);
+              return (
+                <OfferCard
+                  key={oferta.id_oferta}
+                  oferta={oferta}
+                  servicio={{
+                    titulo: oferta.titulo_servicio,
+                    ubicacion: oferta.ubicacion_servicio,
+                  }}
+                  usuario={{ nombre_usuario: oferta.nombre_usuario }}
+                />
+              );
+            })
         ) : (
           <h4>Aún no existen ofertas para tus publicaciones</h4>
         )}
@@ -65,3 +79,5 @@ const ProfileOffer = () => {
 };
 
 export default ProfileOffer;
+
+
