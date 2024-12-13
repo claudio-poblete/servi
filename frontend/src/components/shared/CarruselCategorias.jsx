@@ -35,7 +35,7 @@ const iconosCategoria = {
 const CarruselCategorias = () => {
   const categorias = mockData.categorias;
   const [indiceActivo, setIndiceActivo] = useState(0);
-  const categoriasPorVista = 5;
+  const categoriasPorVista = 3;
 
   const siguienteCategoria = () => {
     setIndiceActivo((prevIndice) => {
