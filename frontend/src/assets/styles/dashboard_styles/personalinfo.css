@@ -1,0 +1,58 @@
+.info-section {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 5rem;
+  padding: 1rem 1rem;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.info-title-container{
+  display: flex;
+  gap: 10rem;
+  justify-content: space-between;
+}
+
+.title{
+  font-size: 38px;
+}
+
+.profile-button{
+  padding: 20px 40px;
+  border-radius: 10px;
+  color: #545F71;
+  text-decoration: none;
+  font-size: 18px;
+  border: solid 1px #545F71;
+  font-weight: 700;
+}
+
+.info-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #F5F5F5;
+  border-radius: 0.8rem;
+  padding: 2rem 5rem;
+  min-height: 40vh;
+}
+
+.info-content{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+p, strong{
+  font-size: 1.5rem;
+}
+
+.metodo-pago{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pago-title{
+  font-size: 1.8rem;
+}

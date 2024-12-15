@@ -71,10 +71,6 @@ const deleteDatosBancarios = async (id_usuario) => {
     if (checkResult.rows.length === 0) {
       throw new Error('No se encontraron datos bancarios para este usuario')
     }
-
-    const deleteQuery = 'DELETE FROM datos_bancarios WHERE id_usuario = $1'
-    const result = await db.query(deleteQuery, [id_usuario])
-
     return { message: 'Datos bancarios eliminados correctamente' }
   } catch (error) {
     console.error('Error al eliminar los datos bancarios:', error)

@@ -1,6 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import AuthContextModule from "../../context/AuthContext";
+import imagenPerfil from '../../assets/image/usuarios/claudio-poblete.jpg';
+
 
 const ProfileInfo = () => {
   const { user } = AuthContextModule.useAuth();
@@ -14,7 +16,7 @@ const ProfileInfo = () => {
       <div className="perfil-img">
         <img
           className="img-perfil"
-          src={user.fotoPerfil || "url_foto_perfil_predeterminada"}
+          src={user.fotoPerfil || imagenPerfil}
           alt={`Foto del perfil de ${user.nombre}`}
         />
         <span className="verificado">

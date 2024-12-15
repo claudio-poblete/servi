@@ -1,8 +1,7 @@
 import ProfileInfo from '../components/profile/ProfileInfo'
 import ProfileOffer from '../components/profile/ProfileOffer'
 import ProfileServices from '../components/profile/ProfileServices'
-/*import PersonalInfoSection from '../components/profile/PersonalInfoSection'
-import ProfileHistorial from '../components/profile/ProfileHistorial'*/
+import PersonalInfoSection from '../components/profile/PersonalInfoSection'
 import AuthContextModule from "../context/AuthContext";
 
 
@@ -12,7 +11,7 @@ const Dashboard = () => {
 
   if (!user) {
     console.log("No user detected");
-    return <p>No estás logueado. Por favor, inicia sesión.</p>;
+    return <h4>No estás logueado. Por favor, inicia sesión.</h4>;
   } else {
     console.log("User detected:", user);
   }
@@ -21,8 +20,7 @@ const Dashboard = () => {
       <ProfileInfo />
       <ProfileOffer />
       <ProfileServices />
-      {/*<ProfileHistorial />
-      <PersonalInfoSection />*/}
+      <PersonalInfoSection />
     </section>
   )
 }

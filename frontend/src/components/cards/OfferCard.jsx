@@ -1,7 +1,8 @@
 import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faLocationDot } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import imagenPerfil from '../../assets/image/usuarios/claudio-poblete.jpg';
+
 
 const OfferCard = ({ oferta, servicio, usuario }) => {
   return (
@@ -9,15 +10,15 @@ const OfferCard = ({ oferta, servicio, usuario }) => {
       <div className="offer-card-title-container">
         <div className="infopersonal-offercard">
           <img
-            src={oferta.fotoPerfil || "/default-profile.png"}
+            src={oferta.fotoPerfil || imagenPerfil}
             alt={`Foto de perfil del usuario que realizó la oferta`}
           />
           <div>
             <div className="nombre-valoracion-ofercard">
               <h5>
-                <Link to={`/perfil/${usuario.id_usuario}`}>
+                <p to={`/perfil/${usuario.id_usuario}`}>
                   {usuario.nombre_usuario || "Usuario desconocido"}
-                </Link>
+                </p>
               </h5>
               <span>
                 {usuario.valoracion || "Sin valoración"}{" "}
