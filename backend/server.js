@@ -13,11 +13,20 @@ const { handleValidationErrors } = require('./middlewares/validationMiddleware')
 
 const app = express()
 
+const allowedOrigins = ['http://localhost:5173', 'https://servi-7wlb.onrender.com'];
+
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
-}))
+}));
+
 
 app.use(express.json())
 
