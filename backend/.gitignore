@@ -1,6 +1,6 @@
 .env
 .env.test
 node_modules
-
+*.log
 
 database.sql
