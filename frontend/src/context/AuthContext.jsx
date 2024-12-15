@@ -66,7 +66,7 @@ const AuthProvider = ({ children }) => {
 
   const register = async (nombre, email, password) => {
     try {
-      const response = await api.post('usuarios/registro', { nombre, email, contrasena: password });
+      const response = await api.post(`${import.meta.env.VITE_API_URL}/usuarios/registro`, { nombre, email, contrasena: password });
       if (response.status === 201) {
         console.log('Registro exitoso:', response.data.message);
         return { success: true, message: response.data.message };
