@@ -75,7 +75,7 @@ const Login = () => {
               required
             />
           </div>
-          <button className="btn-primary" type="submit">
+          <button className="login-button" type="submit">
             Ingresar
           </button>
           <Link to="/register" className="link-to">¿No tienes cuenta? ¡Regístrate aquí!</Link>

@@ -32,6 +32,18 @@
   font-size: 20px;
 }
 
+
+.login-button{
+  background-color: #7715ff;
+  padding: 16px 36px;
+  border-radius: 10px;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 18px;
+  border: solid 1px #ffffff;
+  font-weight: 700;
+}
+
 .btn-primary {
   background-color: #7715ff;
   width: 150px;
@@ -48,7 +60,7 @@
   background-color: #ffffff;
   width: 150px;
   gap: 50px;
-  padding-top: 20px;
+  padding-top: 10px;
   border-radius: 10px;
   color: #333333;
   text-decoration: none;
@@ -57,16 +69,16 @@
 }
 
 .btn-secondary-gallery {
-  display: flex;
+  display: inline-flex;
   justify-content: center;
-  background-color: #ffffff;
+  align-items: center;
+  background-color: #fff;
   width: 300px;
-  height: 80px;
-  padding: 20px 15px 80px 30px;
+  padding: 20px 40px;
   border-radius: 10px;
-  color: #333333;
+  color: #333;
   text-decoration: none;
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 700;
 }
 
@@ -280,8 +292,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 800px;
-  margin-top: 100px;
+  width: auto;
+  padding-top: 100px;
 }
 
 .categorias-container {
@@ -418,10 +430,6 @@ footer h5 {
   gap: 200px;
 }
 
-.login-container .btn-primary {
-  padding: 20px 50px;
-}
-
 .login-container h2 {
   font-size: 40px;
   font-weight: 900;
@@ -516,6 +524,9 @@ footer h5 {
 }
 
 
+.link-to:hover{
+  color: #7715ff;
+}
 
 .infopersonal-offercard {
 display: flex;
