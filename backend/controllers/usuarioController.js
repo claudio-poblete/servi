@@ -54,6 +54,12 @@ const loginUsuario = async (req, res) => {
       return res.status(400).json({ error: 'Correo electrónico o contraseña incorrectos' })
     }
 
+    const isMatch = await bcrypt.compare(contrasena, usuario.contrasena);
+    if (!isMatch) {
+      console.log('Contraseña incorrecta para el usuario:', email);
+      return res.status(400).json({ error: 'Correo electrónico o contraseña incorrectos' });
+    }
+
     const payload = { id: usuario.id, email: usuario.email }
     console.log('Generando token para el usuario:', usuario.id);
 
