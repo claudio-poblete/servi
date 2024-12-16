@@ -45,7 +45,7 @@ const getUsuarioById = async (req, res) => {
 
 
 const loginUsuario = async (req, res) => {
-  const { email } = req.body
+  const { email, contrasena } = req.body
   console.log('Login - Email recibido:', email);
   try {
     const usuario = await UsuarioModel.getUsuarioByEmail(email)
@@ -55,6 +55,9 @@ const loginUsuario = async (req, res) => {
     }
 
     const isMatch = await bcrypt.compare(contrasena, usuario.contrasena);
+    console.log('Contraseña proporcionada:', contrasena);
+    console.log('Contraseña almacenada (hash):', usuario.contrasena);
+    console.log(isMatch)
     if (!isMatch) {
       console.log('Contraseña incorrecta para el usuario:', email);
       return res.status(400).json({ error: 'Correo electrónico o contraseña incorrectos' });
