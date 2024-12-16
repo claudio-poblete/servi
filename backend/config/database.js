@@ -14,6 +14,14 @@ pool.on('error', (err) => {
   process.exit(-1)
 })
 
+pool.connect()
+  .then(() => {
+    console.log('Conexión exitosa a la base de datos')
+  })
+  .catch((err) => {
+    console.error('Error al conectar a la base de datos:', err)
+  })
+
 const query = (text, params) => {
   return pool.query(text, params)
 }
