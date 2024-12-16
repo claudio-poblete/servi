@@ -17,6 +17,7 @@ const allowedOrigins = ['http://localhost:5173', 'https://servi-7wlb.onrender.co
 
 app.use(cors({
   origin: (origin, callback) => {
+    console.log(origin)
     if (allowedOrigins.includes(origin) || !origin) {
       callback(null, true);
     } else {
