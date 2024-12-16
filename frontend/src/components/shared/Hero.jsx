@@ -5,8 +5,11 @@ import {
   faLifeRing,
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
+import AuthContextModule from "../../context/AuthContext";
 
 const Hero = () => {
+  const { user } = AuthContextModule.useAuth();
+
   return (
     <div className="grid-container-hero">
       <div className="cta-hero">
@@ -20,9 +23,11 @@ const Hero = () => {
           <ButtonLink to="/post-service" className="btn-primary">
             Pide un Servicio
           </ButtonLink>
-          <ButtonLink to="/register" className="btn-secondary">
-            Sé un Servi
-          </ButtonLink>
+          {!user && (
+            <ButtonLink to="/register" className="btn-secondary">
+              Sé un Servi
+            </ButtonLink>
+          )}
         </div>
       </div>
       <div className="service-img-ref">
@@ -70,3 +75,4 @@ const Hero = () => {
 };
 
 export default Hero;
+
