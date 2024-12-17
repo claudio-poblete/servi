@@ -5,7 +5,7 @@ const BannerServiGallery = () => {
     <div className="banner-register">
       <h1>Sé un Servi, y da una mano. </h1>
       <ButtonLink to="/haz-un-servi" className="btn-secondary-gallery">
-        Ver en qué ayudar
+        Dar una Mano
       </ButtonLink>
     </div>
   );
