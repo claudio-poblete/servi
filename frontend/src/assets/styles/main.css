@@ -293,14 +293,18 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: auto;
+
+  width: 100%;
+  margin-top: 100px;
+
   padding-top: 100px;
+
 }
 
 .categorias-container {
   display: flex;
   justify-content: space-between;
-  width: 820px;
+  width: 90%;
 }
 .heading-carrusel {
   margin: 0px 100px 0px 100px;
@@ -658,4 +662,17 @@ align-items: center;
 .link-to {
   text-decoration: none;
   color: #333333;
+}
+
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap; /* Evita que el texto se divida en líneas */
+  border: 0;
 }

@@ -34,15 +34,22 @@ const createServicio = async (req, res) => {
 }
 
 const getAllServicios = async (req, res) => {
-  try {
-    const servicios = await obtenerServicios()
+  const { categoriaId, ubicacion, presupuesto } = req.query;
 
-    return res.status(200).json(servicios)
+  try {
+    const servicios = await obtenerServicios({ categoriaId, ubicacion, presupuesto });
+
+    if (servicios.length === 0) {
+      return res.status(404).json({ message: "No se encontraron servicios con los filtros aplicados." });
+    }
+
+    return res.status(200).json(servicios);
   } catch (error) {
-    console.error('Error al obtener los servicios:', error)
-    return res.status(500).json({ error: error.message || 'Error al obtener los servicios' })
+    console.error('Error al obtener los servicios:', error);
+    return res.status(500).json({ error: error.message || 'Error al obtener los servicios' });
   }
-}
+};
+
 
 const getServiciosUsuario = async (req, res) => {
   const { id_usuario } = req.params;

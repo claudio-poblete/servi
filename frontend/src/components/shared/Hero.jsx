@@ -1,36 +1,38 @@
+import PropTypes from "prop-types";
 import ButtonLink from "../buttons/ButtonLink";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCircleCheck,
-  faLifeRing,
-  faStar,
-} from "@fortawesome/free-solid-svg-icons";
-import AuthContextModule from "../../context/AuthContext";
 
-const Hero = () => {
-  const { user } = AuthContextModule.useAuth();
 
+const StatItem = ({ icon, text, value, className }) => (
+  <div className="stat">
+    {icon && <FontAwesomeIcon icon={icon} className={className} />}
+    {value && <h3>{value}</h3>}
+    <h3>{text}</h3>
+  </div>
+);
+
+StatItem.propTypes = {
+  icon: PropTypes.object, // Icono de FontAwesome
+  text: PropTypes.string.isRequired, // Texto de la estadística
+  value: PropTypes.string, // Valor adicional (opcional)
+  className: PropTypes.string, // Clase CSS adicional (opcional)
+};
+
+const Hero = ({ title, subtitle, ctaLinks, stats }) => {
   return (
-    <div className="grid-container-hero">
+    <section className="grid-container-hero" aria-labelledby="hero-title">
       <div className="cta-hero">
-        <h1>Te damos una Mano</h1>
-        <p>
-          Si necesitas colgar un cuadro, pasear a tu perro, entrenar tus
-          habilidades en basketball, obtener un ingreso extra, instalar aire
-          acondicionado, o simplemente ser de ayuda
-        </p>
+        <h1 id="hero-title">{title}</h1>
+        <p>{subtitle}</p>
         <div className="cta-hero-buttons">
-          <ButtonLink to="/post-service" className="btn-primary">
-            Pide un Servicio
-          </ButtonLink>
-          {!user && (
-            <ButtonLink to="/register" className="btn-secondary">
-              Sé un Servi
+          {ctaLinks.map(({ text, to, className }, index) => (
+            <ButtonLink key={index} to={to} className={className}>
+              {text}
             </ButtonLink>
-          )}
+          ))}
         </div>
       </div>
-      <div className="service-img-ref">
+      <div className="service-img-ref" aria-hidden="true">
         <svg
           width="49"
           height="83"
@@ -53,26 +55,38 @@ const Hero = () => {
         </svg>
       </div>
       <div className="hero-stats">
-        <div className="stat">
-          <FontAwesomeIcon icon={faLifeRing} className="localsupport-icon" />
-          <h3>Soporte Local</h3>
-        </div>
-        <div className="stat">
-          <h3>4,8</h3>
-          <FontAwesomeIcon icon={faStar} className="star-ref" />
-          <h3>15.000+ reseñas</h3>
-        </div>
-        <div className="stat">
-          <h3>Miles de servicios completados</h3>
-        </div>
-        <div className="stat">
-          <FontAwesomeIcon icon={faCircleCheck} className="circle-check-icon" />
-          <h3>Servis Verificados</h3>
-        </div>
+        {stats.map(({ icon, text, value, className }, index) => (
+          <StatItem
+            key={index}
+            icon={icon}
+            text={text}
+            value={value}
+            className={className}
+          />
+        ))}
       </div>
-    </div>
+    </section>
   );
 };
 
-export default Hero;
+Hero.propTypes = {
+  title: PropTypes.string.isRequired, // Título principal
+  subtitle: PropTypes.string.isRequired, // Subtítulo
+  ctaLinks: PropTypes.arrayOf(
+    PropTypes.shape({
+      text: PropTypes.string.isRequired, // Texto del botón
+      to: PropTypes.string.isRequired, // Ruta del enlace
+      className: PropTypes.string.isRequired, // Clase CSS del botón
+    })
+  ).isRequired,
+  stats: PropTypes.arrayOf(
+    PropTypes.shape({
+      icon: PropTypes.object, // Icono de FontAwesome
+      text: PropTypes.string.isRequired, // Texto de la estadística
+      value: PropTypes.string, // Valor adicional
+      className: PropTypes.string, // Clase CSS adicional
+    })
+  ).isRequired,
+};
 
+export default Hero;

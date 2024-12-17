@@ -1,37 +1,68 @@
 import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import AuthContextModule from "../../context/AuthContext";
 
-const ServiceCard = ({ servicio }) => {
+const ServiceCard = ({ servicio, onEdit, onOffer }) => {
+  const { user } = AuthContextModule.useAuth();
+  const {
+    id_usuario,
+    ubicacion = "Ubicación no especificada",
+    titulo = "Título no disponible",
+    presupuesto = null,
+  } = servicio;
+
+  const isOwner = user?.id === id_usuario;
+
   return (
     <div className="service-card">
       <div className="service-card-main">
         <div className="ubicacion-card">
           <FontAwesomeIcon icon={faLocationDot} />
-          <p>{servicio.ubicacion}</p>
+          <p>{ubicacion}</p>
         </div>
         <div className="titulo-service">
-          <h4>{servicio.titulo}</h4>
+          <h4>{titulo}</h4>
           <p>
-            CLP{" "}
-            {servicio.presupuesto
-              ? servicio.presupuesto.toLocaleString("es-CL")
-              : "No disponible"}
+            CLP {presupuesto ? presupuesto.toLocaleString("es-CL") : "No disponible"}
           </p>
         </div>
       </div>
-      <button className="btn-primary">Editar</button>
+      {isOwner ? (
+        <button
+          className="btn-primary"
+          onClick={() => onEdit(servicio)}
+          aria-label={`Editar servicio: ${titulo}`}
+        >
+          Editar
+        </button>
+      ) : (
+        <button
+          className="btn-primary"
+          onClick={() => onOffer(servicio)}
+          aria-label={`Enviar oferta para: ${titulo}`}
+        >
+          Enviar Oferta
+        </button>
+      )}
     </div>
   );
 };
 
 ServiceCard.propTypes = {
   servicio: PropTypes.shape({
-    ubicacion: PropTypes.string.isRequired,
-    titulo: PropTypes.string.isRequired,
+    id_usuario: PropTypes.number.isRequired,
+    ubicacion: PropTypes.string,
+    titulo: PropTypes.string,
     presupuesto: PropTypes.number,
   }).isRequired,
+  onEdit: PropTypes.func,
+  onOffer: PropTypes.func,
+};
+
+ServiceCard.defaultProps = {
+  onEdit: () => {}, // Callback vacío para evitar errores si no se pasa
+  onOffer: () => {}, // Callback vacío para manejar la oferta
 };
 
 export default ServiceCard;
-

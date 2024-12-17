@@ -47,8 +47,6 @@ const getOfertasByUsuario = async (id_usuario) => {
   }
 };
 
-
-
 const getAllOfertas = async () => {
   try {
     const query = 'SELECT * FROM ofertas';
@@ -64,7 +62,6 @@ const getAllOfertas = async () => {
     throw error;
   }
 };
-
 
 const getOfertaById = async (id_oferta) => {
   try {
@@ -121,11 +118,37 @@ const deleteOferta = async (id_oferta) => {
   }
 };
 
+// Nuevo método para aceptar una oferta
+const acceptOferta = async (id_oferta) => {
+  try {
+    const checkQuery = 'SELECT * FROM ofertas WHERE id = $1';
+    const checkResult = await db.query(checkQuery, [id_oferta]);
+
+    if (checkResult.rows.length === 0) {
+      throw new Error('Oferta no encontrada');
+    }
+
+    const query = `
+      UPDATE ofertas
+      SET estado = true
+      WHERE id = $1
+      RETURNING *;
+    `;
+    const result = await db.query(query, [id_oferta]);
+
+    return result.rows[0]; // Devuelve la oferta actualizada
+  } catch (error) {
+    console.error('Error al aceptar la oferta:', error);
+    throw error;
+  }
+};
+
 module.exports = {
   createOferta,
   getOfertasByUsuario,
   getAllOfertas,
   getOfertaById,
   updateOferta,
-  deleteOferta
+  deleteOferta,
+  acceptOferta, // Exportamos el nuevo método
 };

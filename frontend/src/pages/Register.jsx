@@ -20,7 +20,7 @@ const Register = () => {
     try {
       const { success, message } = await register(nombre, email, password);
       if (success) {
-        navigate("/login", { state: { successMessage: 'Registro éxitoso, ahora puede logearte' } });
+        navigate("/login", { state: { successMessage: 'Registro éxitoso, ahora puede loguearte' } });
       } else {
         setError(message);
       }
