@@ -37,7 +37,7 @@ app.get('/', (req, res) => {
 app.use('/api/usuarios',usuarioRoutes)
 app.use('/api/ofertas', ofertaRoutes)
 app.use('/api/pagos', authenticateToken, handleValidationErrors, pagoRoutes)
-app.use('/api/categorias', authenticateToken, handleValidationErrors, categoriaRoutes)
+app.use('/api/categorias', categoriaRoutes)
 app.use('/api/servicios', handleValidationErrors, servicioRoutes)
 app.use('/api/resenas', authenticateToken, handleValidationErrors, resenaRoutes)
 
