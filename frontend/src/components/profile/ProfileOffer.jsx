@@ -18,11 +18,15 @@ const ProfileOffer = () => {
         console.log("Fetching data for user:", user.id);
         const response = await api.get(`/ofertas/usuario/${user.id}`);
         console.log("API Response:", response.data);
-        const ofertasInactivas = response.data.data.filter(oferta => oferta.estado_oferta === false);
+
+        // Filtrar solo las ofertas inactivas
+        const ofertasInactivas = response.data.data.filter(
+          (oferta) => oferta.estado_oferta === false
+        );
         setOfertas(ofertasInactivas);
       } catch (err) {
-        console.error('Error al cargar los datos:', err);
-        setError(err.message);
+        console.error("Error al cargar los datos:", err);
+        setError("Hubo un problema al cargar las ofertas. Inténtalo nuevamente.");
       } finally {
         setLoading(false);
       }
@@ -33,6 +37,20 @@ const ProfileOffer = () => {
     }
   }, [user]);
 
+  const handleAcceptOffer = async (idOferta) => {
+    try {
+      console.log(`Aceptando oferta con ID: ${idOferta}`);
+      const response = await api.post(`/ofertas/${idOferta}/aceptar`);
+      console.log("Oferta aceptada:", response.data);
+
+      // Actualizar el estado para reflejar cambios
+      setOfertas((prev) => prev.filter((oferta) => oferta.id_oferta !== idOferta));
+    } catch (err) {
+      console.error("Error al aceptar la oferta:", err);
+      setError("No se pudo aceptar la oferta. Inténtalo nuevamente.");
+    }
+  };
+
   if (loading) {
     return <h4>Cargando ofertas...</h4>;
   }
@@ -40,8 +58,8 @@ const ProfileOffer = () => {
   if (error) {
     return (
       <div className="error-container">
-        <h4>No hay ofertas para tus publicaciones</h4>
-        <p>Parece que aún no hay ofertas asociadas a tus servicios. ¡Intenta publicar más servicios para atraer ofertas!</p>
+        <h4>Error al cargar ofertas</h4>
+        <p>{error}</p>
       </div>
     );
   }
@@ -56,22 +74,25 @@ const ProfileOffer = () => {
       </div>
       <div className="ofertas-container">
         {ofertas.length > 0 ? (
-            ofertas.map((oferta) => {
-              console.log("Datos de la oferta:", oferta);
-              return (
-                <OfferCard
-                  key={oferta.id_oferta}
-                  oferta={oferta}
-                  servicio={{
-                    titulo: oferta.titulo_servicio,
-                    ubicacion: oferta.ubicacion_servicio,
-                  }}
-                  usuario={{ nombre_usuario: oferta.nombre_usuario }}
-                />
-              );
-            })
+          ofertas.map((oferta) => (
+            <OfferCard
+              key={oferta.id_oferta}
+              oferta={oferta}
+              servicio={{
+                titulo: oferta.titulo_servicio,
+                ubicacion: oferta.ubicacion_servicio,
+              }}
+              usuario={{
+                id_usuario: oferta.id_usuario,
+                nombre_usuario: oferta.nombre_usuario,
+                fotoPerfil: oferta.fotoPerfil,
+                valoracion: oferta.valoracion,
+              }}
+              onAccept={handleAcceptOffer}
+            />
+          ))
         ) : (
-          <h4>Aún no existen ofertas para tus publicaciones</h4>
+          <h4>No existen ofertas disponibles para tus publicaciones</h4>
         )}
       </div>
     </section>
@@ -79,5 +100,3 @@ const ProfileOffer = () => {
 };
 
 export default ProfileOffer;
-
-

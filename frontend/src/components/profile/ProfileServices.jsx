@@ -13,30 +13,34 @@ const ProfileServices = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const fetchUserServices = async () => {
+      try {
+        const response = await api.get(`/servicios/mis-servicios/${user.id}`);
+        setServiciosUsuario(response.data);
+      } catch (err) {
+        console.error("Error al obtener los servicios:", err);
+        setError("No pudimos cargar tus servicios. Intenta nuevamente.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (user) {
       fetchUserServices();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  const fetchUserServices = async () => {
-    try {
-      const response = await api.get(`/servicios/mis-servicios/${user.id}`);
-      setServiciosUsuario(response.data);
-      setLoading(false);
-    } catch (err) {
-      console.error("Error al obtener los servicios:", err);
-      setError("Error al obtener los servicios.");
-      setLoading(false);
-    }
-  };
-
   if (loading) {
-    return <div>Cargando servicios...</div>;
+    return <div className="loading-container">Cargando servicios...</div>;
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <div className="error-container">
+        <h4>Error</h4>
+        <p>{error}</p>
+      </div>
+    );
   }
 
   return (
@@ -61,4 +65,3 @@ const ProfileServices = () => {
 };
 
 export default ProfileServices;
-
