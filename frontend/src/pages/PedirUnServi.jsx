@@ -39,9 +39,7 @@ const PedirUnServi = () => {
 
   return (
     <div className="wizard-container">
-      <header>
-        <h1>Solicitando servicio - Paso {step}</h1>
-      </header>
+
       {step === 1 && (
         <StepCategoria nextStep={nextStep} updateFormData={updateFormData} />
       )}

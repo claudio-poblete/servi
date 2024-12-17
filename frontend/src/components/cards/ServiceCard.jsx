@@ -1,9 +1,18 @@
 import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import AuthContextModule from "../../context/AuthContext";
 
-const ServiceCard = ({ servicio, onEdit }) => {
-  const { ubicacion = "Ubicación no especificada", titulo = "Título no disponible", presupuesto = null } = servicio;
+const ServiceCard = ({ servicio, onEdit, onOffer }) => {
+  const { user } = AuthContextModule.useAuth();
+  const {
+    id_usuario,
+    ubicacion = "Ubicación no especificada",
+    titulo = "Título no disponible",
+    presupuesto = null,
+  } = servicio;
+
+  const isOwner = user?.id === id_usuario;
 
   return (
     <div className="service-card">
@@ -19,28 +28,41 @@ const ServiceCard = ({ servicio, onEdit }) => {
           </p>
         </div>
       </div>
-      <button
-        className="btn-primary"
-        onClick={() => onEdit(servicio)}
-        aria-label={`Editar servicio: ${titulo}`}
-      >
-        Editar
-      </button>
+      {isOwner ? (
+        <button
+          className="btn-primary"
+          onClick={() => onEdit(servicio)}
+          aria-label={`Editar servicio: ${titulo}`}
+        >
+          Editar
+        </button>
+      ) : (
+        <button
+          className="btn-primary"
+          onClick={() => onOffer(servicio)}
+          aria-label={`Enviar oferta para: ${titulo}`}
+        >
+          Enviar Oferta
+        </button>
+      )}
     </div>
   );
 };
 
 ServiceCard.propTypes = {
   servicio: PropTypes.shape({
+    id_usuario: PropTypes.number.isRequired,
     ubicacion: PropTypes.string,
     titulo: PropTypes.string,
     presupuesto: PropTypes.number,
   }).isRequired,
-  onEdit: PropTypes.func, // Callback para manejar la edición
+  onEdit: PropTypes.func,
+  onOffer: PropTypes.func,
 };
 
 ServiceCard.defaultProps = {
   onEdit: () => {}, // Callback vacío para evitar errores si no se pasa
+  onOffer: () => {}, // Callback vacío para manejar la oferta
 };
 
 export default ServiceCard;

@@ -280,14 +280,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 800px;
+  width: 100%;
   margin-top: 100px;
 }
 
 .categorias-container {
   display: flex;
   justify-content: space-between;
-  width: 820px;
+  width: 90%;
 }
 .heading-carrusel {
   margin: 0px 100px 0px 100px;

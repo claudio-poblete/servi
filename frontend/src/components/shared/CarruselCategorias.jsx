@@ -37,7 +37,7 @@ const CarruselCategorias = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [indiceActivo, setIndiceActivo] = useState(0);
-  const categoriasPorVista = 3;
+  const categoriasPorVista = 5;
 
   useEffect(() => {
     const fetchCategorias = async () => {

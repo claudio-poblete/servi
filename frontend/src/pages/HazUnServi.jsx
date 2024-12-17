@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 
 const HazUnServi = () => {
-  const { categoriaId } = useParams(); // Captura la categoría desde la URL (opcional)
+  const { categoriaId } = useParams();
   const [servicios, setServicios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,7 +21,6 @@ const HazUnServi = () => {
         });
         setServicios(response.data);
       } catch (err) {
-        console.error("Error al cargar los servicios:", err);
         setError("No pudimos cargar los servicios. Intenta nuevamente.");
       } finally {
         setLoading(false);
@@ -40,6 +39,20 @@ const HazUnServi = () => {
     setFiltros({ ubicacion: "", presupuesto: "" });
   };
 
+  const handleOfferClick = (servicioId) => {
+    api.post(`/ofertas`, {
+      id_servicio: servicioId,
+      id_usuario: 1,
+      oferta: 50000,
+    })
+      .then(() => {
+        alert("Oferta enviada con éxito!");
+      })
+      .catch((error) => {
+        console.error("Error al enviar oferta:", error);
+      });
+  };
+
   if (loading) {
     return <div className="loading-container">Cargando servicios...</div>;
   }
@@ -55,7 +68,6 @@ const HazUnServi = () => {
 
   return (
     <section className="servi-gallery">
-      {/* Filtros */}
       <div className="gallery-filters">
         <h3>Filtrar Servicios</h3>
         <div className="filter-container">
@@ -85,11 +97,14 @@ const HazUnServi = () => {
         </button>
       </div>
 
-      {/* Galería de servicios */}
-      <div className="services-container">
+      <div className="services-card-container">
         {servicios.length > 0 ? (
           servicios.map((servicio) => (
-            <ServiceCard key={servicio.id} servicio={servicio} />
+            <ServiceCard
+              key={servicio.id}
+              servicio={servicio}
+              onOfferClick={handleOfferClick}
+            />
           ))
         ) : (
           <h4>No hay servicios disponibles con los filtros seleccionados.</h4>
