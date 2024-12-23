@@ -1,48 +1,37 @@
 import { useEffect, useState } from "react";
-import OfferCard from "../cards/OfferCard";
-import AuthContextModule from "../../context/AuthContext";
 import api from "../../api";
+import OfferCard from "../cards/OfferCard";
 
 const ProfileOffer = () => {
-  const { user } = AuthContextModule.useAuth();
   const [ofertas, setOfertas] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchOffers = async () => {
       try {
-        const token = localStorage.getItem("authToken");
-        const response = await api.get(`/ofertas/recibidas`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        console.log("Datos de ofertas recibidas:-->", response.data);
-
+        const response = await api.get("/ofertas/recibidas");
         setOfertas(response.data);
       } catch (err) {
         console.error("Error al cargar las ofertas recibidas:", err);
-        setError("Hubo un problema al cargar las ofertas. Inténtalo nuevamente.");
-      } finally {
-        setLoading(false);
+        setError("No se pudieron cargar las ofertas recibidas.");
       }
     };
 
-    if (user) {
-      fetchData();
-    }
-  }, [user]);
+    fetchOffers();
+  }, []);
 
-  if (loading) {
-    return <h4>Cargando ofertas...</h4>;
-  }
+  const handleAcceptOffer = async (id_oferta) => {
+    try {
+      const response = await api.post(`/ofertas/${id_oferta}/aceptar`);
+      console.log("Oferta aceptada:", response.data);
+      setOfertas((prev) => prev.filter((oferta) => oferta.id_oferta !== id_oferta));
+    } catch (err) {
+      console.error("Error al aceptar la oferta:", err);
+    }
+  };
 
   if (error) {
-    return (
-      <div className="error-container">
-        <h4>Error al cargar ofertas</h4>
-        <p>{error}</p>
-      </div>
-    );
+    return <div>{error}</div>;
   }
 
   return (
@@ -63,7 +52,8 @@ const ProfileOffer = () => {
                 nombre_usuario: oferta.nombre_usuario,
                 fotoPerfil: oferta.foto_perfil_usuario,
               }}
-              onAccept={() => {}}
+              isOwner={false}
+              onAccept={handleAcceptOffer}
             />
           ))
         ) : (

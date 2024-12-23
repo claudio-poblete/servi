@@ -10,8 +10,6 @@ const ProfileMyOffers = () => {
     const fetchMyOffers = async () => {
       try {
         const response = await api.get("/ofertas/mis-ofertas");
-        console.log("Datos de ofertas emitidas:-->", response.data);
-
         setMyOffers(response.data);
       } catch (err) {
         console.error("Error al cargar tus ofertas:", err);
@@ -25,9 +23,7 @@ const ProfileMyOffers = () => {
   const handleDeleteOffer = async (id_oferta) => {
     try {
       await api.delete(`/ofertas/${id_oferta}`);
-      setMyOffers((prev) =>
-        prev.filter((oferta) => oferta.id_oferta !== id_oferta)
-      );
+      setMyOffers((prev) => prev.filter((oferta) => oferta.id_oferta !== id_oferta));
     } catch (err) {
       console.error("Error al eliminar la oferta:", err);
     }
@@ -55,7 +51,8 @@ const ProfileMyOffers = () => {
                 nombre_usuario: oferta.nombre_usuario,
                 fotoPerfil: oferta.foto_perfil_usuario,
               }}
-              onDelete={() => handleDeleteOffer(oferta.id_oferta)}
+              isOwner={true}
+              onDelete={handleDeleteOffer}
             />
           ))
         ) : (
