@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import imagenPerfil from "../../assets/image/usuarios/claudio-poblete.jpg";
 
-const OfferCard = ({ oferta, servicio, usuario, onAccept }) => {
+const OfferCard = ({ oferta, servicio, usuario, onAccept, onDelete, isOwner }) => {
   return (
     <div className="offer-card">
       <div className="offer-card-title-container">
@@ -16,9 +16,7 @@ const OfferCard = ({ oferta, servicio, usuario, onAccept }) => {
           <div>
             <div className="nombre-valoracion-ofercard">
               <h5>
-                <p to={`/perfil/${usuario.id_usuario}`}>
-                  {usuario.nombre_usuario || "Usuario desconocido"}
-                </p>
+                <p>{usuario.nombre_usuario || "Usuario desconocido"}</p>
               </h5>
               <span>
                 {usuario.valoracion !== undefined ? usuario.valoracion : "Sin valoración"}{" "}
@@ -39,13 +37,25 @@ const OfferCard = ({ oferta, servicio, usuario, onAccept }) => {
         <h4>{servicio.titulo || "Título no disponible"}</h4>
         <h5>CLP ${oferta.oferta.toLocaleString("es-CL")}</h5>
       </div>
-      <button
-        className="btn-primary"
-        onClick={() => onAccept(oferta.id_oferta)}
-        aria-label={`Aceptar oferta por ${oferta.oferta}`}
-      >
-        Aceptar Oferta
-      </button>
+      <div className="offer-card-actions">
+        {isOwner ? (
+          <button
+            className="btn-danger"
+            onClick={() => onDelete(oferta.id_oferta)}
+            aria-label={`Eliminar oferta de ${oferta.oferta}`}
+          >
+            Eliminar Oferta
+          </button>
+        ) : (
+          <button
+            className="btn-success"
+            onClick={() => onAccept(oferta.id_oferta)}
+            aria-label={`Aceptar oferta por ${oferta.oferta}`}
+          >
+            Aceptar Oferta
+          </button>
+        )}
+      </div>
     </div>
   );
 };
@@ -65,20 +75,14 @@ OfferCard.propTypes = {
     fotoPerfil: PropTypes.string,
     valoracion: PropTypes.number,
   }).isRequired,
-  onAccept: PropTypes.func, // Callback para aceptar la oferta
+  onAccept: PropTypes.func,
+  onDelete: PropTypes.func,
+  isOwner: PropTypes.bool.isRequired,
 };
 
 OfferCard.defaultProps = {
-  usuario: {
-    nombre_usuario: "Usuario desconocido",
-    fotoPerfil: imagenPerfil,
-    valoracion: 0,
-  },
-  servicio: {
-    titulo: "Título no disponible",
-    ubicacion: "Ubicación no especificada",
-  },
-  onAccept: () => {}, // Callback vacío por defecto
+  onAccept: () => {},
+  onDelete: () => {},
 };
 
 export default OfferCard;

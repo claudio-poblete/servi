@@ -9,14 +9,21 @@ const createOferta = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { id_servicio, id_usuario, oferta } = req.body;
+    const { id_servicio, oferta } = req.body;
+    const id_usuario = res.locals.user?.id;
+
+    if (!id_usuario) {
+      return res.status(401).json({ error: "Usuario no autenticado." });
+    }
 
     const newOferta = await OfertaModel.createOferta(id_servicio, id_usuario, oferta);
-
     return res.status(201).json(newOferta);
   } catch (error) {
-    console.error('Error al crear la oferta:', error);
-    return res.status(500).json({ error: 'Error al crear la oferta' });
+    console.error("Error al crear la oferta:", error.message);
+    if (error.message.includes("Ya existe una oferta")) {
+      return res.status(409).json({ error: error.message });
+    }
+    return res.status(500).json({ error: "Error interno al crear la oferta." });
   }
 };
 
@@ -24,11 +31,10 @@ const createOferta = async (req, res) => {
 const getAllOfertas = async (req, res) => {
   try {
     const ofertas = await OfertaModel.getAllOfertas();
-
     return res.status(200).json(ofertas);
   } catch (error) {
-    console.error('Error al obtener las ofertas:', error);
-    return res.status(500).json({ error: 'Error al obtener las ofertas' });
+    console.error("Error al obtener todas las ofertas:", error.message);
+    return res.status(500).json({ error: "Error al obtener todas las ofertas." });
   }
 };
 
@@ -38,29 +44,47 @@ const getOfertaById = async (req, res) => {
 
   try {
     const oferta = await OfertaModel.getOfertaById(id_oferta);
-
+    if (!oferta) {
+      return res.status(404).json({ error: "Oferta no encontrada." });
+    }
     return res.status(200).json(oferta);
   } catch (error) {
-    console.error('Error al obtener la oferta:', error);
-    return res.status(500).json({ error: 'Error al obtener la oferta' });
+    console.error("Error al obtener la oferta:", error.message);
+    return res.status(500).json({ error: "Error al obtener la oferta." });
   }
 };
 
-// Obtener ofertas de un usuario
+// Obtener ofertas realizadas por un usuario
 const getOfertasByUsuario = async (req, res) => {
-  const { userId } = req.params;
+  const id_usuario = res.locals.user?.id;
+
+  if (!id_usuario) {
+    return res.status(401).json({ error: "Usuario no autenticado." });
+  }
 
   try {
-    const ofertas = await OfertaModel.getOfertasByUsuario(userId);
-
-    if (!ofertas || ofertas.length === 0) {
-      return res.status(200).json({ message: 'No tienes ofertas aún.', data: [] });
-    }
-
-    return res.status(200).json({ data: ofertas });
+    const ofertas = await OfertaModel.getOfertasByUsuario(id_usuario);
+    return res.status(200).json(ofertas);
   } catch (error) {
-    console.error('Error al obtener las ofertas del usuario:', error);
-    return res.status(500).json({ error: 'Error al obtener las ofertas del usuario.' });
+    console.error("Error al obtener las ofertas del usuario:", error.message);
+    return res.status(500).json({ error: "Error al obtener las ofertas del usuario." });
+  }
+};
+
+// Obtener ofertas recibidas para servicios del usuario autenticado
+const getOfertasRecibidas = async (req, res) => {
+  const id_usuario = res.locals.user?.id;
+
+  if (!id_usuario) {
+    return res.status(401).json({ error: "Usuario no autenticado." });
+  }
+
+  try {
+    const ofertasRecibidas = await OfertaModel.getOfertasRecibidas(id_usuario);
+    return res.status(200).json(ofertasRecibidas);
+  } catch (error) {
+    console.error("Error al obtener las ofertas recibidas:", error.message);
+    return res.status(500).json({ error: "Error al obtener las ofertas recibidas." });
   }
 };
 
@@ -71,11 +95,13 @@ const updateOferta = async (req, res) => {
 
   try {
     const updatedOferta = await OfertaModel.updateOferta(id_oferta, oferta, estado);
-
+    if (!updatedOferta) {
+      return res.status(404).json({ error: "Oferta no encontrada." });
+    }
     return res.status(200).json(updatedOferta);
   } catch (error) {
-    console.error('Error al actualizar la oferta:', error);
-    return res.status(500).json({ error: 'Error al actualizar la oferta' });
+    console.error("Error al actualizar la oferta:", error.message);
+    return res.status(500).json({ error: "Error al actualizar la oferta." });
   }
 };
 
@@ -85,30 +111,26 @@ const deleteOferta = async (req, res) => {
 
   try {
     const response = await OfertaModel.deleteOferta(id_oferta);
-
     return res.status(200).json(response);
   } catch (error) {
-    console.error('Error al eliminar la oferta:', error);
-    return res.status(500).json({ error: 'Error al eliminar la oferta' });
+    console.error("Error al eliminar la oferta:", error.message);
+    return res.status(500).json({ error: "Error al eliminar la oferta." });
   }
 };
 
-//Nueva función**: Aceptar una oferta
+// Aceptar una oferta
 const acceptOferta = async (req, res) => {
   const { id_oferta } = req.params;
 
   try {
-    // Llamada al modelo para marcar la oferta como aceptada
     const updatedOferta = await OfertaModel.acceptOferta(id_oferta);
-
     if (!updatedOferta) {
-      return res.status(404).json({ error: 'Oferta no encontrada.' });
+      return res.status(404).json({ error: "Oferta no encontrada." });
     }
-
-    return res.status(200).json({ message: 'Oferta aceptada con éxito.', data: updatedOferta });
+    return res.status(200).json({ message: "Oferta aceptada con éxito.", data: updatedOferta });
   } catch (error) {
-    console.error('Error al aceptar la oferta:', error);
-    return res.status(500).json({ error: 'Error al aceptar la oferta.' });
+    console.error("Error al aceptar la oferta:", error.message);
+    return res.status(500).json({ error: "Error al aceptar la oferta." });
   }
 };
 
@@ -117,7 +139,8 @@ module.exports = {
   getAllOfertas,
   getOfertaById,
   getOfertasByUsuario,
+  getOfertasRecibidas,
   updateOferta,
   deleteOferta,
-  acceptOferta, // Exportamos el nuevo método
+  acceptOferta,
 };

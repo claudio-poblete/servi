@@ -2,31 +2,30 @@ import { useEffect, useState } from "react";
 import api from "../../api";
 import OfferCard from "../cards/OfferCard";
 
-const ProfileOffer = () => {
-  const [ofertas, setOfertas] = useState([]);
+const ProfileMyOffers = () => {
+  const [myOffers, setMyOffers] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchOffers = async () => {
+    const fetchMyOffers = async () => {
       try {
-        const response = await api.get("/ofertas/recibidas");
-        setOfertas(response.data);
+        const response = await api.get("/ofertas/mis-ofertas");
+        setMyOffers(response.data);
       } catch (err) {
-        console.error("Error al cargar las ofertas recibidas:", err);
-        setError("No se pudieron cargar las ofertas recibidas.");
+        console.error("Error al cargar tus ofertas:", err);
+        setError("No se pudieron cargar tus ofertas.");
       }
     };
 
-    fetchOffers();
+    fetchMyOffers();
   }, []);
 
-  const handleAcceptOffer = async (id_oferta) => {
+  const handleDeleteOffer = async (id_oferta) => {
     try {
-      const response = await api.post(`/ofertas/${id_oferta}/aceptar`);
-      console.log("Oferta aceptada:", response.data);
-      setOfertas((prev) => prev.filter((oferta) => oferta.id_oferta !== id_oferta));
+      await api.delete(`/ofertas/${id_oferta}`);
+      setMyOffers((prev) => prev.filter((oferta) => oferta.id_oferta !== id_oferta));
     } catch (err) {
-      console.error("Error al aceptar la oferta:", err);
+      console.error("Error al eliminar la oferta:", err);
     }
   };
 
@@ -36,10 +35,10 @@ const ProfileOffer = () => {
 
   return (
     <section className="ofertas-solicitudes">
-      <h4 className="heading-servicios">Ofertas Recibidas</h4>
+      <h4 className="heading-servicios">Ofertas Realizadas</h4>
       <div className="ofertas-container">
-        {ofertas.length > 0 ? (
-          ofertas.map((oferta) => (
+        {myOffers.length > 0 ? (
+          myOffers.map((oferta) => (
             <OfferCard
               key={oferta.id_oferta}
               oferta={oferta}
@@ -52,16 +51,16 @@ const ProfileOffer = () => {
                 nombre_usuario: oferta.nombre_usuario,
                 fotoPerfil: oferta.foto_perfil_usuario,
               }}
-              isOwner={false}
-              onAccept={handleAcceptOffer}
+              isOwner={true}
+              onDelete={handleDeleteOffer}
             />
           ))
         ) : (
-          <h4>No hay ofertas recibidas</h4>
+          <p>No has realizado ofertas.</p>
         )}
       </div>
     </section>
   );
 };
 
-export default ProfileOffer;
+export default ProfileMyOffers;

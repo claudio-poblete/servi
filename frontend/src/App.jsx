@@ -14,6 +14,7 @@ import Footer from "./components/shared/Footer";
 import ScrollToTop from "./components/utils/ScrollToTop";
 import PedirUnServi from "./pages/PedirUnServi"
 import HazUnServi from "./pages/HazUnServi";
+import Ofertar from "./pages/Ofertar";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
             <Route path="/haz-un-servi" element={<HazUnServi />}/>
             <Route path="/post-service" element={<PedirUnServi />} />
             <Route path="/como-funciona" element={<ComoFunciona />} />
+            <Route path="/ofertar/:id_servicio" element={<Ofertar />} />
           </Routes>
           <Footer />
         </div>

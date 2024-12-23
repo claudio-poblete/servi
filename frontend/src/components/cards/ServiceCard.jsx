@@ -2,9 +2,11 @@ import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import AuthContextModule from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
-const ServiceCard = ({ servicio, onEdit, onOffer }) => {
+const ServiceCard = ({ servicio, onEdit }) => {
   const { user } = AuthContextModule.useAuth();
+  const navigate = useNavigate();
   const {
     id_usuario,
     ubicacion = "Ubicación no especificada",
@@ -13,6 +15,10 @@ const ServiceCard = ({ servicio, onEdit, onOffer }) => {
   } = servicio;
 
   const isOwner = user?.id === id_usuario;
+
+  const handleOffer = () => {
+    navigate(`/ofertar/${servicio.id}`);
+  };
 
   return (
     <div className="service-card">
@@ -39,7 +45,7 @@ const ServiceCard = ({ servicio, onEdit, onOffer }) => {
       ) : (
         <button
           className="btn-primary"
-          onClick={() => onOffer(servicio)}
+          onClick={handleOffer}
           aria-label={`Enviar oferta para: ${titulo}`}
         >
           Enviar Oferta
@@ -57,12 +63,10 @@ ServiceCard.propTypes = {
     presupuesto: PropTypes.number,
   }).isRequired,
   onEdit: PropTypes.func,
-  onOffer: PropTypes.func,
 };
 
 ServiceCard.defaultProps = {
   onEdit: () => {}, // Callback vacío para evitar errores si no se pasa
-  onOffer: () => {}, // Callback vacío para manejar la oferta
 };
 
 export default ServiceCard;
