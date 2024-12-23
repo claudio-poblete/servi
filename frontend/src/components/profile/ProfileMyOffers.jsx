@@ -10,6 +10,8 @@ const ProfileMyOffers = () => {
     const fetchMyOffers = async () => {
       try {
         const response = await api.get("/ofertas/mis-ofertas");
+        console.log("Datos de ofertas emitidas:-->", response.data);
+
         setMyOffers(response.data);
       } catch (err) {
         console.error("Error al cargar tus ofertas:", err);
@@ -44,8 +46,15 @@ const ProfileMyOffers = () => {
             <OfferCard
               key={oferta.id_oferta}
               oferta={oferta}
-              servicio={oferta.servicio}
-              usuario={oferta.usuario}
+              servicio={{
+                titulo: oferta.titulo_servicio,
+                ubicacion: oferta.ubicacion_servicio,
+              }}
+              usuario={{
+                id_usuario: oferta.id_usuario,
+                nombre_usuario: oferta.nombre_usuario,
+                fotoPerfil: oferta.foto_perfil_usuario,
+              }}
               onDelete={() => handleDeleteOffer(oferta.id_oferta)}
             />
           ))

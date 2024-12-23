@@ -66,6 +66,29 @@ const getOfertaById = async (id_oferta) => {
 };
 
 // Obtener ofertas realizadas por un usuario
+// const getOfertasByUsuario = async (id_usuario) => {
+//   try {
+//     const query = `
+//       SELECT
+//         o.id AS id_oferta,
+//         o.oferta,
+//         o.estado AS estado_oferta,
+//         s.id AS id_servicio,
+//         s.titulo AS titulo_servicio,
+//         s.ubicacion AS ubicacion_servicio
+//       FROM ofertas o
+//       JOIN servicio s ON o.id_servicio = s.id
+//       WHERE o.id_usuario = $1
+//     `;
+//     const result = await db.query(query, [id_usuario]);
+
+//     return result.rows;
+//   } catch (error) {
+//     console.error('Error al obtener las ofertas del usuario:', error);
+//     throw error;
+//   }
+// };
+
 const getOfertasByUsuario = async (id_usuario) => {
   try {
     const query = `
@@ -75,19 +98,23 @@ const getOfertasByUsuario = async (id_usuario) => {
         o.estado AS estado_oferta,
         s.id AS id_servicio,
         s.titulo AS titulo_servicio,
-        s.ubicacion AS ubicacion_servicio
+        s.ubicacion AS ubicacion_servicio,
+        u.id AS id_usuario,
+        u.nombre AS nombre_usuario,
+        u.foto_perfil AS foto_perfil_usuario
       FROM ofertas o
       JOIN servicio s ON o.id_servicio = s.id
+      JOIN usuario u ON o.id_usuario = u.id
       WHERE o.id_usuario = $1
     `;
     const result = await db.query(query, [id_usuario]);
-
     return result.rows;
   } catch (error) {
-    console.error('Error al obtener las ofertas del usuario:', error);
+    console.error("Error al obtener las ofertas del usuario:", error);
     throw error;
   }
 };
+
 
 // Obtener ofertas recibidas para los servicios de un usuario
 const getOfertasRecibidas = async (id_usuario) => {

@@ -19,11 +19,11 @@ const Dashboard = () => {
         <ProfileOffer />
       </div>
       <div className="dashboard-section">
-        <h3 className="visually-hidden">Mis Servicios</h3>
+        <h3 className="visually-hidden">Servicios Solicitados</h3>
         <ProfileServices />
       </div>
       <div className="dashboard-section">
-        <h3 className="visually-hidden">Mis Ofertas</h3>
+        <h3 className="visually-hidden">Ofertas Realizadas</h3>
         <ProfileMyOffers /> {/* Nueva sección */}
       </div>
     </section>

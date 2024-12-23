@@ -16,6 +16,8 @@ const ProfileOffer = () => {
         const response = await api.get(`/ofertas/recibidas`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        console.log("Datos de ofertas recibidas:-->", response.data);
+
         setOfertas(response.data);
       } catch (err) {
         console.error("Error al cargar las ofertas recibidas:", err);
